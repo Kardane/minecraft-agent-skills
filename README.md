@@ -1,8 +1,8 @@
 # Minecraft Agent Skills
 
-Thirteen reusable skills for current Minecraft 26.x development and operations,
-with explicit Minecraft 1.21.x and Forge 1.20.1 legacy lanes. Use raw skills in
-a project or install the bundled Codex and Claude Code plugin.
+13 skills for Minecraft mods, plugins, datapacks, art, and server administration.
+Supports Minecraft 26.x, with examples for 1.21.x and Forge 1.20.1.
+Use the skill folders directly or install the Codex or Claude Code plugin.
 
 ## Install
 
@@ -55,33 +55,20 @@ bundle or selecting a model does not add that tool.
 | `minecraft-worldedit-ops` | Safe WorldEdit selections, schematics, and brushes |
 | `minecraft-essentials-ops` | EssentialsX configuration, moderation, and economy |
 
-## Using GPT-6 Astra and Claude Fable 5.1
+## Usage
 
-These are host-loaded skills, not model-specific API integrations. Select the
-model in Codex or Claude Code. The bundle does not set model IDs, effort,
-permissions, or global configuration.
-
-Describe the outcome and target version, for example:
+Describe the task and Minecraft version. For example:
 
 - "Fix this Paper 1.21.11 command without upgrading the server."
 - "Add a 26.2 datapack recipe and verify its files."
-- "Audit this Velocity configuration; prepare any changes locally."
+- "Review this Velocity configuration and suggest changes."
 
-The agent should inspect the existing project first, load only relevant
-references, and finish authorized work with focused edits and proportionate
-checks. Existing version pins and explicit user choices take precedence over
-example defaults. A layout validator checks selected static rules; it does
-not establish compilation, in-game behavior, or production readiness.
+The agent reads the relevant skill and uses your project's version settings.
+Choose your model and tools in Codex or Claude Code.
 
-The September 2026 review follows the official guidance for
-[GPT-6 Astra](https://developers.openai.com/api/docs/guides/latest-model#gpt-6-astra-behavior),
-[Claude Fable 5.1](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-1),
-[Codex skills](https://developers.openai.com/codex/skills), and
-[Claude Code skills](https://code.claude.com/docs/en/skills).
-This is a content and packaging review, not a benchmark of both models or
-an in-game certification of every example.
-See the [September 2026 audit](docs/skill-audit-2026-09.md) for all 13 skills,
-primary sources, corrections, and verification limits.
+Bundled validators check file structure and common mistakes. Test builds and
+in-game behavior in your Minecraft project.
+See the [September review notes](docs/skill-audit-2026-09.md) for fixes and sources.
 
 ## Maintaining the bundle
 

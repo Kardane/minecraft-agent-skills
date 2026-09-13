@@ -46,8 +46,8 @@
 
   <g class="font" transform="translate(56 68)">
     <text class="eyebrow" x="0" y="0">Minecraft Agent Skills</text>
-    <text class="title" x="0" y="46">Install once. Let the right skill take over.</text>
-    <text class="body" x="0" y="78">A synced 13-skill library for Minecraft modding, plugins, datapacks, packs, testing, release, and server operations.</text>
+    <text class="title" x="0" y="46">Minecraft skills for your project</text>
+    <text class="body" x="0" y="78">13 skills for mods, plugins, datapacks, resource packs, testing, releases, and servers.</text>
   </g>
 
   <!-- Four aligned workflow cards -->

@@ -15,9 +15,8 @@ This plugin packages the same 13 Minecraft skills for Codex and Claude Code.
   ```
 
 Use either the plugin or raw skill folders for a host to avoid duplicate skills.
-Model selection and image-generation tools come from the host, not this bundle.
-See the [repository usage guidance](../../README.md#using-gpt-6-astra-and-claude-fable-51)
-for GPT-6 Astra and Claude Fable 5.1.
+Choose your model and tools in Codex or Claude Code.
+See [usage examples](../../README.md#usage).
 
 ## Maintain
 
