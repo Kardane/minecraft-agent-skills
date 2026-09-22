@@ -1,26 +1,24 @@
 ---
 name: minecraft-world-generation
-description: "Create and debug Minecraft Java 1.21.8 world generation for datapacks, NeoForge, or Fabric, including biomes, dimensions, features, structures, and biome modifiers. Use for worldgen data or registration, not general gameplay systems."
+description: "Design and debug Minecraft Java 1.21.8 worldgen data semantics and registry graphs for biomes, dimensions, configured/placed features, structures, and related datapack data. For Fabric Java registration/datagen implementation, use minecraft-fabric-server-dev with this skill only as domain reference."
 ---
 
 # Minecraft World Generation
 
-Use this skill for biome, dimension, feature, or structure data and their
-registration. Use `minecraft-java-content-engineering` for non-worldgen data and
-`minecraft-fabric-server-dev` for non-worldgen gameplay code.
+Use this skill for biome, dimension, feature, and structure **data semantics, schemas, and registry graphs**. Use `minecraft-java-content-engineering` for non-worldgen pack content. Loader-specific Java registration, Fabric datagen wiring, callbacks, and API code are owned by `minecraft-fabric-server-dev`; this skill may support those tasks with worldgen domain knowledge.
 
 ## Routing Boundaries
 
-- `Use when`: the task changes worldgen data, registration, or injection.
-- `Do not use when`: the task is non-worldgen datapack work (`minecraft-java-content-engineering`).
-- `Do not use when`: the task is non-worldgen Fabric mod systems (`minecraft-fabric-server-dev`).
+- `Use when`: the task changes worldgen JSON/data semantics, registry references, biome/dimension/feature/structure schemas, or datapack worldgen composition.
+- `Primary capabilities`: `worldgen-data-semantics`
+- `Do not use when`: the primary deliverable is Fabric Java registration/datagen/API code (`minecraft-fabric-server-dev`) or non-worldgen datapack/resource-pack work (`minecraft-java-content-engineering`).
 
 ## Choose the delivery path
 
 | Approach | Best When | Platform |
 |----------|-----------|----------|
 | Datapack JSON | Change data supplied by a pack | Vanilla, any server |
-| **Mod + Datagen** | Registering new biomes/dimensions, code-driven | NeoForge / Fabric |
+| **Mod + Datagen data model** | Designing generated worldgen data/registry graph; Java wiring is handed to the loader implementation skill | NeoForge / Fabric |
 | **Biome Modifier (NeoForge)** | Adding features/spawns to existing biomes | NeoForge |
 | **BiomeModification API (Fabric)** | Adding features/spawns to existing biomes | Fabric |
 

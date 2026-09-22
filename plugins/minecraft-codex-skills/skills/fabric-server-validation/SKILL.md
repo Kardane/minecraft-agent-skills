@@ -7,8 +7,9 @@ description: "Validate Fabric server-side changes with focused evidence across J
 
 ## Routing Boundaries
 
-- `Use when`: validating Fabric server-side changes, synchronization, networking, vanilla compatibility, or release behavior.
-- `Do not use when`: implementing Fabric code, working on client-rendering-only mods, or using a non-Fabric loader.
+- `Use when`: validating Fabric server-side runtime behavior, synchronization, networking, production-environment behavior, or vanilla-client compatibility.
+- `Primary capabilities`: `fabric-behavior-validation`
+- `Do not use when`: implementing Fabric code, building CI/tag/publishing workflows (`minecraft-ci-release`), working on client-rendering-only mods, or using a non-Fabric loader.
 
 Turn Fabric server-side changes into a closed validation loop that Codex can execute itself. Prefer the smallest deterministic evidence that crosses the behavior boundary; do not collect packet data merely because it is available.
 

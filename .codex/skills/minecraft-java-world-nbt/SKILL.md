@@ -8,6 +8,7 @@ description: "Safely inspect, diff, and make targeted edits to Minecraft Java 1.
 ## Routing Boundaries
 
 - `Use when`: inspecting, diffing, or making targeted edits to Minecraft Java world `.dat` or Anvil `.mca` files.
+- `Primary capabilities`: `offline-world-nbt`
 - `Do not use when`: operating a live server, implementing mods, or designing datapack/resource-pack content.
 
 Use this skill when the task involves **Minecraft Java Edition 1.21.8** world data such as `level.dat`, `playerdata/*.dat`, `data/*.dat`, `region/r.*.*.mca`, `entities/r.*.*.mca`, or `poi/r.*.*.mca`.

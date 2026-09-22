@@ -8,9 +8,9 @@ description: "Set up, operate, tune, and troubleshoot Minecraft Java 1.21.8 serv
 ## Scope and Routing Boundaries
 
 ### Routing Boundaries
-- `Use when`: the task is infrastructure or live operations for Minecraft servers (deployment choice, tuning, backups, proxying, security, incident response).
-- `Do not use when`: the task is implementing Fabric mod gameplay or loader code (`minecraft-fabric-server-dev`).
-- `Do not use when`: the task is command-only automation (`minecraft-commands-scripting`) rather than infrastructure or live server operations.
+- `Use when`: the task is infrastructure or live operations for Minecraft servers, including deployment, tuning, RCON transport/automation, backups, proxying, security, recovery, or incident response.
+- `Primary capabilities`: `server-operations`
+- `Do not use when`: the task is Fabric mod implementation (`minecraft-fabric-server-dev`) or only raw Minecraft command/selector/scoreboard semantics (`minecraft-commands-scripting`).
 - `Do not use when`: the task is datapack/resource-pack authoring (`minecraft-java-content-engineering`).
 
 ## References

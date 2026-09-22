@@ -6,9 +6,9 @@ description: "Set up and review CI, artifact publishing, versioning, and release
 # Minecraft CI / Release Skill
 
 ## Routing Boundaries
-- `Use when`: the task is CI/CD pipelines, artifact publishing, versioning, or release management.
-- `Do not use when`: the task is gameplay implementation (`minecraft-fabric-server-dev`) or datapack/resource-pack authoring (`minecraft-java-content-engineering`).
-- `Do not use when`: the task is server runtime operations or infrastructure tuning (`minecraft-server-admin`).
+- `Use when`: the task is CI/CD pipelines, tag/version policy, GitHub Releases, artifact publishing, Modrinth/CurseForge publishing, or release automation.
+- `Primary capabilities`: `ci-release-publishing`
+- `Do not use when`: the task is Fabric production-code implementation or local build debugging (`minecraft-fabric-server-dev`), behavior validation (`fabric-server-validation`), datapack/resource-pack authoring, or live server operations.
 
 ---
 

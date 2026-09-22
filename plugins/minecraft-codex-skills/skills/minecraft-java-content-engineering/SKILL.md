@@ -7,8 +7,9 @@ description: "Minecraft Java Edition 1.21.8의 데이터팩과 리소스팩을 �
 
 ## Routing Boundaries
 
-- `Use when`: building Minecraft Java datapack or resource-pack content, including commands, JSON/NBT data, textures, models, and pack validation.
-- `Do not use when`: implementing Fabric Java/Mixin/Polymer code, editing live world `.dat`/`.mca` files, or operating a server.
+- `Use when`: authoring or validating a complete Minecraft Java datapack/resource-pack deliverable, its folder structure, registries, assets, or cross-file pack integration.
+- `Primary capabilities`: `pack-authoring`
+- `Do not use when`: the task is command syntax/command-only logic (`minecraft-commands-scripting`), worldgen schema/registry data (`minecraft-world-generation`), Fabric Java/Mixin/Polymer code, offline world `.dat`/`.mca` editing, or live server operations.
 
 데이터팩과 리소스팩을 별도 활성 Skill로 두지 않고 **콘텐츠 종류에 따라 내부 레퍼런스를 라우팅**한다. 한 작업이 두 팩을 동시에 요구할 때만 양쪽 문서를 함께 읽는다.
 

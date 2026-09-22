@@ -1,6 +1,6 @@
 ---
 name: minecraft-commands-scripting
-description: "Write and debug Minecraft Java 1.21.8 commands, selectors, execute chains, scoreboards, NBT, and RCON scripts. Use for command-only work; use minecraft-java-content-engineering for complete datapack structures."
+description: "Write and debug Minecraft Java 1.21.8 command syntax and command-only logic: selectors, execute chains, scoreboards, command NBT/components, and mcfunction snippets. Use minecraft-java-content-engineering for complete datapacks and minecraft-server-admin for RCON transport, backups, or live operations."
 ---
 
 # Minecraft Commands & Scripting Skill
@@ -18,15 +18,15 @@ the relevant examples. Check current release notes for version-sensitive syntax.
 - Coordinates: `~` = relative offset, `^` = local (look-direction)
 
 ### Routing Boundaries
-- `Use when`: the task is raw command chains, scoreboards, selector logic, or RCON command scripting.
-- `Do not use when`: creating or editing full datapack structures and registries (`minecraft-java-content-engineering`).
-- `Do not use when`: behavior depends on Fabric Java or Mixin code (`minecraft-fabric-server-dev`).
+- `Use when`: the task is raw command syntax, command chains, scoreboards, selector logic, or isolated mcfunction logic.
+- `Primary capabilities`: `command-semantics`
+- `Do not use when`: creating/editing a complete datapack (`minecraft-java-content-engineering`), implementing Brigadier/Fabric Java code (`minecraft-fabric-server-dev`), or automating RCON connections, backups, retries, credentials, or live operations (`minecraft-server-admin`).
 
 ## Bundled References And Examples
 
 - Execute cheat sheet: `references/execute-cheat-sheet.md`
 - Selector cheat sheet: `references/selector-cheat-sheet.md`
-- Example scripts: `scripts/examples/arena-countdown.mcfunction`, `scripts/examples/stopwatch-podium.mcfunction`, `scripts/examples/rcon-backup-warning.sh` (one-time setup commands are called out in comments when needed)
+- Example scripts: `scripts/examples/arena-countdown.mcfunction`, `scripts/examples/stopwatch-podium.mcfunction`
 
 Use the cheat sheets when you need fast command recall without scanning this whole
 skill file. Copy and adapt the example scripts as needed.
@@ -40,63 +40,10 @@ relevant command family. It includes version boundaries for item components,
 attributes, text events, gamerules, and 1.21.8 time/weather syntax. Do not run example
 blocks as a batch; each demonstrates a separate operation.
 
-## RCON Scripting
+## RCON as an execution context
 
-Connect to a Minecraft server remotely using RCON (enable in `server.properties`):
+When the user only needs the **Minecraft command string** that will be sent over RCON, this skill owns the command semantics. Connection setup, credential handling, retries, `save-off`/backup orchestration, transport security, and live-server automation belong to `minecraft-server-admin`.
 
-```properties
-# server.properties
-enable-rcon=true
-rcon.password=your_password
-rcon.port=25575
-```
-
-RCON is unencrypted. Keep the port bound to a trusted private network, VPN, or
-localhost, and inject the password through a protected secret rather than a
-command-line argument.
-
-### Bash RCON script (using `mcrcon`)
-```bash
-#!/usr/bin/env bash
-set -euo pipefail
-
-: "${MCRCON_PASS:?inject MCRCON_PASS from a protected secret}"
-export MCRCON_HOST="${MCRCON_HOST:-127.0.0.1}"
-export MCRCON_PORT="${MCRCON_PORT:-25575}"
-
-restore_saves() {
-    mcrcon "save-on" >/dev/null || true
-}
-trap restore_saves EXIT INT TERM
-
-# Send command
-mcrcon "say Server backup starting in 5 minutes"
-sleep 300
-mcrcon "save-off"
-mcrcon "save-all flush"
-
-# Backup world
-rsync -av /path/to/server/world/ /backups/world_$(date +%Y%m%d_%H%M%S)/
-
-mcrcon "save-on"
-trap - EXIT INT TERM
-mcrcon "say Backup complete!"
-```
-
-### Python RCON
-```python
-import os
-
-from mcrcon import MCRcon
-
-with MCRcon("localhost", os.environ["MCRCON_PASS"], port=25575) as mcr:
-    response = mcr.command("list")
-    print(response)
-    # "There are 3 of a max of 20 players online: Steve, Alex, Notch"
-    
-    players = response.split(": ")[1].split(", ") if ": " in response else []
-    print(f"Online players: {players}")
-```
 
 ---
 

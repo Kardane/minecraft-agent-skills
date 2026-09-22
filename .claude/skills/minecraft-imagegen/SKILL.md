@@ -13,6 +13,7 @@ server brand asset.
 
 ### Routing Boundaries
 - `Use when`: the task is generating or editing a bitmap image for a Minecraft project, such as `pack.png`, release art, store thumbnails, concept textures, UI mockups, or server/banner art.
+- `Primary capabilities`: `raster-image-generation`
 - `Do not use when`: the task is deterministic resource-pack implementation work such as `pack.mcmeta`, block/item model JSON, blockstates, fonts, sounds, or shader files (`minecraft-java-content-engineering`).
 - `Do not use when`: the task is vector/code-native UI, an existing SVG/logo system, or non-image code/assets.
 - `Do not use when`: the current host does not expose built-in image generation or an equivalent image-editing tool.
