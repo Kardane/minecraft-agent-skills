@@ -25,13 +25,14 @@ description: "Minecraft Java Edition 1.21.8 Fabric 서버사이드 모드를 설
 1. 새 프로젝트 생성
 `./scripts/new-fabric-server-mod.sh -ProjectName <name> -PackageBase <pkg> -OutputDir <path>`
 
+   기본 scaffold는 Fabric API만 사용한다. 실제 요구사항이 있을 때만 `--with-mixin`, `--with-polymer`를 추가한다.
+
 2. 생성 직후 정합성 검증
 `./scripts/verify-mod-env.sh -ProjectDir <path>/<name>`
 
 3. Minecraft 내부 구현, lifecycle, Mixin target이 불확실하면 **내장 mcdev-mcp 소스 분석 절차**를 먼저 수행한다. `references/mcdev-source-analysis.md`와 `references/mcdev-query-playbook.md`를 필요한 범위만 읽는다.
 
-4. placeholder 버전 치환 후 빌드
-`./gradlew clean build`
+4. placeholder 버전을 치환한다. 이 scaffold는 Gradle wrapper 바이너리를 임의 생성하지 않는다. `gradlew`가 없으면 공식 Fabric 템플릿의 version-matched wrapper를 가져오거나 신뢰할 수 있는 로컬 Gradle로 wrapper를 먼저 생성한다. wrapper가 준비된 뒤 `./gradlew clean build`를 실행한다.
 
 5. 런타임/행동 검증은 `fabric-server-validation`에 위임. 기본적으로 GUI/Computer Use보다 GameTest 또는 MCP Fabric + Carpet 상태 검증을 우선
 
@@ -52,17 +53,17 @@ description: "Minecraft Java Edition 1.21.8 Fabric 서버사이드 모드를 설
 
 ### 3) 아키텍처 잠금
 
-- `core`: 게임 규칙/상태/권한(서버 진실 소스)
-- `polymer`: 서버 상태를 클라이언트 표현으로 투영
-- `mixin`: 기본 API로 못 잡는 지점만 최소 주입
+- 기본값은 **Fabric API + 필요한 최소 Java 코드**다. 책임이 생기기 전에는 빈 service/bridge 계층이나 패키지를 미리 만들지 않는다.
+- `mixin`: Fabric API/event/callback로 요구사항을 충족할 수 없을 때만 추가하고, 정확한 target과 주입 지점을 확인한 뒤 최소 범위로 사용한다.
+- `polymer`: 바닐라 클라이언트에 custom block/item/entity/UI 표현을 투영해야 할 때만 추가한다. 단순 서버 로직/명령/상태 처리에는 기본 의존성으로 넣지 않는다.
 
 ### 4) 구현 루프
 
 1. 순수 서버 로직 작성
 2. Minecraft 내부 메서드/호출 순서가 불확실하면 mcdev-mcp로 class/method/caller/callee를 확인하고, 필요 시 `references/mcdev-source-analysis.md`를 읽는다.
 3. 단위 기능 검증
-4. 필요한 최소 Mixin 주입
-5. Polymer 표현 연결
+4. Fabric API로 부족한 요구사항이 있을 때만 최소 Mixin 추가
+5. 바닐라 클라이언트 표현 계층이 실제로 필요할 때만 Polymer 연결
 6. `fabric-server-validation`로 가장 싼 충분한 검증 경로를 선택해 행동 검증
 7. 로그/프로파일 점검 후 다음 기능으로 이동
 
@@ -92,16 +93,18 @@ description: "Minecraft Java Edition 1.21.8 Fabric 서버사이드 모드를 설
   - `-OutputDir <path>` 또는 `--output-dir <path>`
 - 확장 옵션:
   - `--mod-id <id>`
-  - `--minecraft-version <version>`
   - `--loader-version <ver>`
   - `--fabric-api-version <ver>`
-  - `--polymer-version <ver>`
   - `--yarn-mappings <ver>`
+  - `--with-mixin` — Mixin config를 opt-in으로 생성
+  - `--with-polymer` — Polymer 의존성을 opt-in으로 추가
+  - `--polymer-version <ver>` — `--with-polymer`와 함께 사용
 
 생성 결과:
-- `gradle.properties`, `build.gradle`, `settings.gradle`
-- `fabric.mod.json`, `<modid>.mixins.json`
-- `MainMod`, `ServerLifecycleMixin`, `PolymerBridge` 샘플 클래스
+- 항상: `gradle.properties`, `build.gradle`, `settings.gradle`, `fabric.mod.json`, 최소 `MainMod`
+- `--with-mixin`: 빈 Mixin config를 추가하고 실제 target mixin은 요구사항이 생겼을 때 작성
+- `--with-polymer`: Polymer repository/dependency/version key만 추가하고 불필요한 bridge wrapper는 만들지 않음
+- Gradle wrapper는 생성하지 않는다. 공식 Fabric 템플릿의 1.21.8 wrapper를 사용하거나 로컬 Gradle로 생성한 뒤 커밋한다.
 
 ### `scripts/verify-mod-env.sh`
 
@@ -110,9 +113,11 @@ description: "Minecraft Java Edition 1.21.8 Fabric 서버사이드 모드를 설
   - `-ProjectDir <path>` 또는 `--project-dir <path>`
 - 주요 검사:
   - 필수 파일/디렉터리 존재
-  - `minecraft_version=1.21.8`, Java 21, 버전 키 존재
+  - `minecraft_version=1.21.8`, Java 21, Fabric Loader/API 버전 키 존재
   - `fabric.mod.json` JSON 파싱 + `environment=server`
-  - mixin 설정 JSON 파싱/핵심 키 검증
+  - Mixin이 선언된 경우에만 config 존재/JSON 구조 검증
+  - Polymer가 선언된 경우에만 version key/dependency 정합성 검증
+  - Gradle wrapper: 전체가 없으면 bootstrap 필요 경고, 일부만 존재하면 실패
   - 클라이언트 전용 import 사용 탐지(경고)
   - placeholder 미치환 값 탐지(경고)
 
