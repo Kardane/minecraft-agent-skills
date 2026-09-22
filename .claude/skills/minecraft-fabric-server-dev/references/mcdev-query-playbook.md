@@ -31,7 +31,7 @@ mc_search(concept/symbol)
 set/select 1.21.8
 → search by class/concept
 → inspect implementation and signature
-→ translate to repository mapping namespace if needed
+→ translate result to official Mojang mappings if the source tool uses another namespace
 ```
 
 ### Lifecycle bug

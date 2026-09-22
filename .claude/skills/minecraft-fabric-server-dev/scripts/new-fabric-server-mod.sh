@@ -13,7 +13,6 @@ show_usage() {
 
 옵션:
   --mod-id <id>
-  --yarn-mappings <ver>            기본값: 1.21.8+build.1
   --loom-version <ver>             기본값: 1.8-SNAPSHOT
   --loader-version <ver>           기본값: TODO_LOADER_VERSION
   --fabric-api-version <ver>       기본값: TODO_FABRIC_API_VERSION
@@ -24,7 +23,7 @@ USAGE
 }
 
 project_name=""; package_base=""; output_dir=""; mod_id=""
-minecraft_version="1.21.8"; yarn_mappings="1.21.8+build.1"; loom_version="1.8-SNAPSHOT"
+minecraft_version="1.21.8"; loom_version="1.8-SNAPSHOT"
 loader_version="TODO_LOADER_VERSION"; fabric_api_version="TODO_FABRIC_API_VERSION"; with_mixin=false
 
 while [[ $# -gt 0 ]]; do
@@ -35,7 +34,6 @@ while [[ $# -gt 0 ]]; do
     -OutputDir|--output-dir) output_dir="${2:-}"; shift 2 ;;
     --mod-id) mod_id="${2:-}"; shift 2 ;;
     --minecraft-version) [[ "${2:-}" == "1.21.8" ]] || { echo "[ERROR] 기준 버전은 Minecraft 1.21.8입니다." >&2; exit 1; }; shift 2 ;;
-    --yarn-mappings) yarn_mappings="${2:-}"; shift 2 ;;
     --loom-version) loom_version="${2:-}"; shift 2 ;;
     --loader-version) loader_version="${2:-}"; shift 2 ;;
     --fabric-api-version) fabric_api_version="${2:-}"; shift 2 ;;
@@ -64,7 +62,6 @@ printf "rootProject.name = '%s'\n" "$project_name" > "$project_dir/settings.grad
 cat > "$project_dir/gradle.properties" <<EOF
 org.gradle.jvmargs=-Xmx2G
 minecraft_version=$minecraft_version
-yarn_mappings=$yarn_mappings
 loader_version=$loader_version
 fabric_api_version=$fabric_api_version
 maven_group=$package_base
@@ -85,7 +82,7 @@ repositories {
 }
 dependencies {
     minecraft "com.mojang:minecraft:\${project.minecraft_version}"
-    mappings "net.fabricmc:yarn:\${project.yarn_mappings}:v2"
+    mappings loom.officialMojangMappings()
     modImplementation "net.fabricmc:fabric-loader:\${project.loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:\${project.fabric_api_version}"
 }
