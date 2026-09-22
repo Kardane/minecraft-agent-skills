@@ -1,6 +1,6 @@
 ---
 name: minecraft-commands-scripting
-description: "Write and debug Minecraft Java 26.x and 1.21.x commands, selectors, execute chains, scoreboards, NBT, and RCON scripts. Use for command-only work; use minecraft-datapack for complete datapack structures."
+description: "Write and debug Minecraft Java 26.x and 1.21.x commands, selectors, execute chains, scoreboards, NBT, and RCON scripts. Use for command-only work; use minecraft-java-content-engineering for complete datapack structures."
 ---
 
 # Minecraft Commands & Scripting Skill
@@ -19,8 +19,8 @@ the relevant examples. Check current release notes for version-sensitive syntax.
 
 ### Routing Boundaries
 - `Use when`: the task is raw command chains, scoreboards, selector logic, or RCON command scripting.
-- `Do not use when`: creating or editing full datapack structures and registries (`minecraft-datapack`).
-- `Do not use when`: behavior depends on Java plugin or mod code (`minecraft-plugin-dev`/`minecraft-modding`).
+- `Do not use when`: creating or editing full datapack structures and registries (`minecraft-java-content-engineering`).
+- `Do not use when`: behavior depends on Fabric Java or Mixin code (`minecraft-fabric-server-dev`).
 
 ## Bundled References And Examples
 

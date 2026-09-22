@@ -6,14 +6,14 @@ description: "Create and debug Minecraft 26.x and legacy 1.21.x world generation
 # Minecraft World Generation
 
 Use this skill for biome, dimension, feature, or structure data and their
-registration. Use `minecraft-datapack` for non-worldgen data and
-`minecraft-modding` for non-worldgen gameplay code.
+registration. Use `minecraft-java-content-engineering` for non-worldgen data and
+`minecraft-fabric-server-dev` for non-worldgen gameplay code.
 
 ## Routing Boundaries
 
 - `Use when`: the task changes worldgen data, registration, or injection.
-- `Do not use when`: the task is non-worldgen datapack work (`minecraft-datapack`).
-- `Do not use when`: the task is non-worldgen mod systems (`minecraft-modding`).
+- `Do not use when`: the task is non-worldgen datapack work (`minecraft-java-content-engineering`).
+- `Do not use when`: the task is non-worldgen Fabric mod systems (`minecraft-fabric-server-dev`).
 
 ## Choose the delivery path
 
