@@ -21,7 +21,7 @@ This fork intentionally removes broad or overlapping skills so an agent is less 
 | `minecraft-imagegen` | Minecraft-oriented concept art, pack icons, thumbnails, textures, and UI mockups |
 | `minecraft-server-admin` | Server hosting, RCON automation, backups, proxies, JVM/runtime operations, deployment, and troubleshooting |
 | `minecraft-fabric-server-dev` | Fabric server implementation: lifecycle/threading, networking, state/config, commands/permissions, performance, Mixin/Polymer, and source analysis |
-| `fabric-server-validation` | Fabric GameTest, runtime validation, protocol/client compatibility, and E2E evidence |
+| `fabric-server-validation` | Fabric GameTest, Carpet fake-player runtime validation, protocol/client compatibility, and E2E evidence |
 | `minecraft-java-content-engineering` | Minecraft Java datapacks, resource packs, and worldgen data/schema/registry-graph engineering |
 | `minecraft-java-world-nbt` | Safe inspection, diffing, and targeted edits for Java world NBT and Anvil region files |
 
@@ -80,7 +80,7 @@ For a Fabric server-side project, use the narrowest skill that matches the task.
 | Task | Preferred skill |
 | --- | --- |
 | Fabric Java code, lifecycle/threading, networking, persistence/config, commands/permissions, performance, Mixin/Polymer | `minecraft-fabric-server-dev` |
-| Fabric GameTest, runtime validation, E2E, client compatibility checks | `fabric-server-validation` |
+| Fabric GameTest, Carpet fake-player/tick-controlled reproduction, E2E, client compatibility checks | `fabric-server-validation` |
 | Datapacks/resource packs, worldgen JSON/schema/registry graphs, recipes, loot, models, and pack assets | `minecraft-java-content-engineering` |
 | Vanilla command syntax, selectors, scoreboards, mcfunction logic | `minecraft-commands-scripting` |
 | GitHub Actions and release automation | `minecraft-ci-release` |

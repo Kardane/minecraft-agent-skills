@@ -51,6 +51,27 @@
       "allowed_supporting": []
     },
     {
+      "id": "carpet-fake-player-interaction",
+      "prompt": "Carpet fake player를 특정 위치에 세우고 버튼을 누르게 한 뒤 서버 상태가 바뀌는지 반복 검증해줘",
+      "capability": "fabric-behavior-validation",
+      "expected_primary": "fabric-server-validation",
+      "allowed_supporting": []
+    },
+    {
+      "id": "carpet-tick-warp-simulation",
+      "prompt": "Carpet fake player와 tick warp로 농장을 12000틱 돌린 뒤 생산량 변화가 맞는지 서버 상태로 검증해줘",
+      "capability": "fabric-behavior-validation",
+      "expected_primary": "fabric-server-validation",
+      "allowed_supporting": []
+    },
+    {
+      "id": "fake-player-not-vanilla-proof",
+      "prompt": "Carpet fake player use 테스트가 통과했으니 실제 바닐라 클라이언트 상호작용도 같다고 검증해줘",
+      "capability": "fabric-behavior-validation",
+      "expected_primary": "fabric-server-validation",
+      "allowed_supporting": []
+    },
+    {
       "id": "complete-datapack",
       "prompt": "1.21.8 데이터팩 전체 구조를 만들고 function, advancement, tag까지 묶어줘",
       "capability": "pack-authoring",

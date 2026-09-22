@@ -1,43 +1,145 @@
 ---
 name: carpet-player-harness
-description: Drive Carpet Mod fake players as deterministic test actors for a Minecraft 1.21.8 Fabric development server, normally through MCP Fabric `run_command`, and assert authoritative server state afterward. Use when server-side behavior specifically requires player-shaped actions such as use, attack, movement, looking, hotbar selection, block interaction, portal entry, or trigger activation, but a real network client is not required.
+description: "Drive Carpet fake players as repeatable player-shaped actors for Minecraft Java 1.21.8 Fabric server validation. Pair /player and optional /tick control with authoritative server-state assertions; do not treat fake players as real-client or vanilla-client evidence."
 ---
 
-# Carpet Player Harness
+# Carpet Fake-Player Validation Backend
 
-## Role in the merged skill set
+This is an internal backend of `fabric-server-validation`, not a separate routing skill. Its job is to make server-side player interaction cheap to reproduce.
 
-Player-action helper under $fabric-server-validation. It may still be invoked directly when the user explicitly asks for this tool/lane, but it does not replace the top-level implementation or validation policy.
+For Minecraft Java 1.21.8, Carpet 1.4.177 is a known compatible release. The project's installed Carpet version remains the source of truth.
 
-Treat Carpet fake players as **actuators**, not as the source of truth for assertions.
+## Use this backend when
 
-## Scenario lifecycle
+Choose Carpet B+ when all of these are true:
 
-Follow this sequence:
+- the behavior needs a player-shaped actor;
+- the important assertion is server-authoritative state;
+- a socket-backed client is not part of the requirement;
+- running a live isolated development server is acceptable;
+- the scenario is faster to reproduce here than to author as a GameTest.
 
-1. **Arrange** — isolate coordinates/world state and create required blocks/entities/items.
-2. **Spawn** — create a uniquely named fake player.
-3. **Prime** — set position, orientation, game mode, inventory/hotbar, effects, and any mod-specific prerequisite state.
-4. **Act** — execute the smallest `/player` action sequence that represents the user behavior.
-5. **Await** — poll an observable state/event with a deadline.
-6. **Assert** — read authoritative server state through MCP Fabric or a diagnostic command.
-7. **Cleanup** — stop actions, remove the bot, and remove fixture state.
+Strong examples:
 
-Read `references/player-commands.md` for the stable command vocabulary.
+- pressure plate, button, door, portal, pickup, trigger, or proximity behavior;
+- inventory/server-state mutations initiated by a player action;
+- multi-player-shaped concurrency where actual network timing is not the contract;
+- farm or mechanic simulations where `/tick warp` can advance a bounded number of server ticks;
+- reproducing a bug before encoding a durable GameTest regression.
 
-## Command transport
+## Do not use this backend as final proof when
 
-Prefer MCP Fabric `run_command` because Codex can issue commands and immediately follow them with structured reads. If the repository already has a stable RCON/test harness, reuse it rather than introducing another transport merely for style.
+- login/reconnect/disconnect packet lifecycle matters;
+- encryption/authentication/socket timing matters;
+- client prediction, GUI, rendering, resource packs, or visual state matter;
+- the requirement says "unmodified vanilla client";
+- exact normal-client interaction reach/hand behavior is the bug under test.
 
-## Reliability rules
+Known Carpet fake-player action behavior can differ from actual clients at some interaction edges. When the disputed behavior is the actuator itself, escalate rather than treating the fake player as an oracle.
 
-- Use a unique bot name such as `Test_<feature>_<short-id>` when parallel or repeated runs are possible.
-- Run `player <name> stop` before cleanup if continuous/interval actions may be active.
-- Teleport/orient explicitly; do not depend on the operator's current position.
-- Prefer exact `look at`/cardinal direction commands to manual mouse movement.
-- Never infer feature success from `/player` command success alone.
-- Replace `sleep 2` with a bounded predicate such as “player dimension becomes X”, “block becomes Y”, “entity count changes”, or “event appears”.
+## Required scenario contract
 
-## Boundary
+### 1. Arrange
 
-Carpet fake players are not socket-backed real clients. Do **not** use this lane to prove login/configuration/play protocol behavior, encryption/authentication, real disconnect semantics, or packet ordering visible only across a network connection. Use `mineflayer-e2e` for those requirements.
+- choose isolated coordinates;
+- record the baseline state;
+- create only required blocks/entities/items;
+- choose a unique bot name such as `Test_<feature>_<short-id>`.
+
+### 2. Spawn and prime
+
+- spawn the fake player;
+- explicitly set position and gamemode;
+- clear/set inventory and hotbar state;
+- explicitly set look direction/target;
+- stop inherited or previous continuous actions.
+
+Never depend on an operator's position, facing, inventory, or game mode.
+
+### 3. Act
+
+Issue the smallest player action that represents the behavior: use, attack, move, jump, sneak/sprint, hotbar selection, or mount/dismount.
+
+Avoid continuous actions unless continuity is part of the requirement. If used, always stop them during cleanup.
+
+### 4. Advance or await
+
+Prefer server ticks and semantic predicates over wall-clock sleeps.
+
+For tick-exact scenarios:
+
+```text
+/tick freeze
+→ action
+→ /tick step <N>
+→ observe
+```
+
+For bounded simulations:
+
+```text
+baseline aggregate
+→ /tick warp <N>
+→ observe aggregate
+→ compare delta
+```
+
+For event/state transitions, bounded polling is often clearer than either mode.
+
+### 5. Assert
+
+The assertion must be independent from command success.
+
+Prefer, in order:
+
+1. MCP Fabric structured server state/event reads;
+2. an existing mod diagnostic/test hook;
+3. a narrow deterministic vanilla/server command query.
+
+Assert the semantic outcome: inventory, scoreboard/state, block/entity state, dimension, cooldown, counter, mod-owned persistent state, or a specific event.
+
+### 6. Cleanup
+
+Always:
+
+1. `/player <name> stop`;
+2. remove/kill the fake player;
+3. remove test blocks/entities/items/state;
+4. restore tick state if it was changed;
+5. verify cleanup.
+
+A failed assertion does not skip cleanup.
+
+## Multi-actor scenarios
+
+Use multiple fake players only when concurrency itself matters.
+
+- assign one role per bot;
+- use unique names;
+- place each bot explicitly;
+- phase actions with known ticks or a server predicate;
+- assert one shared authoritative outcome;
+- clean every actor even when one phase fails.
+
+Do not interpret this as real multi-client network concurrency.
+
+## Promotion rule
+
+B+ is excellent for reproduction. A stable, deterministic regression should be promoted to Unit/Server GameTest when that preserves the actual behavior boundary.
+
+```text
+Carpet B+ reproduction
+→ isolate server-side invariant
+→ add Unit/GameTest regression
+→ implement fix
+→ rerun regression
+→ use Carpet B+ again only when player-shaped integration adds evidence
+```
+
+## Scarpet policy
+
+Scarpet is **not** required for the default fake-player backend.
+
+Do not add a Scarpet app merely to sequence a handful of `/player` and `/tick` commands. Consider Scarpet later only when the project already uses it or repeated multi-actor orchestration becomes materially simpler than the existing test transport.
+
+Read [carpet-player-commands.md](carpet-player-commands.md) for the bounded command vocabulary.

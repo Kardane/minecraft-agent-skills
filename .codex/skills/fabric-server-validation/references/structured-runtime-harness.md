@@ -11,7 +11,7 @@ Codex
   └─ Carpet fake player       player-shaped actuator
 ```
 
-Keep the roles separate. Carpet performs actions; MCP Fabric observes authoritative runtime state. Neither is a real socket-backed Minecraft client.
+Keep the roles separate. Carpet performs player-shaped actions; MCP Fabric observes authoritative runtime state. Neither is a real socket-backed Minecraft client. Scarpet is not part of the default harness.
 
 ## Preferred lifecycle
 
@@ -27,7 +27,7 @@ baseline observation
 → stop/remove fake player and clean fixture
 ```
 
-Do not use `/player` command success as feature proof. Do not use fixed multi-second sleeps when a block/entity/player/event predicate can be polled instead.
+Do not use `/player` command success as feature proof. Prefer `/tick freeze` + `/tick step` for tick-exact server transitions and bounded `/tick warp` for long simulations when wall-clock/client timing is not the contract. Do not use fixed multi-second sleeps when a block/entity/player/event predicate can be polled instead.
 
 ## When this route is better than GameTest
 
@@ -45,6 +45,10 @@ Do not use `/player` command success as feature proof. Do not use fixed multi-se
 - the MCP/Carpet setup would add more moving pieces than the behavior requires.
 
 A good workflow is often **B+ reproduce → B GameTest regression → fix → B rerun**, with B+ retained only as a diagnostic harness if it remains useful.
+
+## Fake-player fidelity boundary
+
+Carpet's action pack executes server-side player actions and may differ from a normal client at interaction edges. Do not use it as the deciding oracle for reach, hand-selection fallthrough, client input cadence, prediction, rendering, or packet timing. If one of those is the defect, escalate to a real network/client route.
 
 ## Escalate to Mineflayer only for a real network boundary
 

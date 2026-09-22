@@ -14,21 +14,24 @@ Best for authoritative server behavior: commands, block/entity state, inventorie
 
 Evidence standard: deterministic arrange/action/assert, tick-bounded completion, authoritative server-world assertions.
 
-## Tier B+ — Structured runtime harness (MCP Fabric + optional Carpet)
+## Tier B+ — Carpet fake-player runtime harness
 
-Use this as a fast **runtime reproduction/diagnostic lane** against an isolated running development dedicated server.
+Use this as a fast **player-shaped server-interaction reproduction lane** against an isolated development dedicated server.
 
 Evidence standard:
 
-- structured MCP Fabric observations of authoritative server state/events;
-- Carpet fake-player actions only when player-shaped server interaction is required;
+- explicit arrange/spawn/prime/action/advance/assert/cleanup phases;
+- Carpet `/player` actions for the player-shaped input;
+- optional Carpet `/tick freeze|step|warp` for deterministic server-time control;
+- MCP Fabric or another deterministic observer for authoritative server state/events;
 - bounded polling around semantic predicates;
-- explicit cleanup/isolation;
-- clear statement that the actor is not a socket-backed client.
+- a fidelity statement that the actor is not a socket-backed client.
 
-Tier B+ is especially useful before a fix because it lets Codex reproduce and inspect a bug without GUI automation. For durable regressions, prefer moving the proving assertion into Tier A/B when doing so preserves the relevant behavior boundary.
+Tier B+ is especially useful before a fix because it can reproduce player-driven server behavior without GUI automation. It also suits bounded simulations such as N ticks of a farm/mechanic when the assertion is a server-state delta.
 
-Tier B+ does **not** prove login/network-client behavior and never proves unmodified-vanilla compatibility.
+For durable regressions, prefer moving the proving assertion into Tier A/B when doing so preserves the relevant behavior boundary.
+
+Tier B+ does **not** prove login/network-client behavior, client rendering/prediction, exact real-client interaction semantics, or unmodified-vanilla compatibility.
 
 ## Tier C — Fabric Client GameTest
 
@@ -130,9 +133,13 @@ Reserve for framing, compression, encryption, byte codec, or pipeline defects. K
 
 ## Decision examples
 
+### Player action changes server state
+
+Use B when the action can be represented directly and the regression belongs in CI. Use B+ when the reproduction specifically benefits from a player-shaped actor: position/look/hotbar/use/attack/movement plus bounded tick progression. Convert a stable server invariant to B when practical.
+
 ### Command changes server state
 
-Tier B. Add D only when production packaging/side behavior is part of the risk. For rapid reproduction on an already-running dev server, B+ can establish the behavior first; convert it to B for a durable regression when practical.
+Tier B. Add D only when production packaging/side behavior is part of the risk. For rapid reproduction on an already-running dev server, B+ can establish the behavior first only when a player-shaped actor materially changes the scenario.
 
 ### Entity metadata must synchronize to a client used only for automated development validation
 
