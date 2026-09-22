@@ -33,7 +33,7 @@ description: "Use Minecraft Java reference workflows for commands, NBT, item com
 
 ## 입력 잠금 규칙 (필수)
 
-1. 기준 버전부터 확정한다 (`1.21.8` 또는 `1.21.11`).
+1. 기준 버전은 `1.21.8`로 고정한다. 다른 버전 문법을 혼합하지 않는다.
 2. 질문을 2개 이하 도메인으로 분해한다.
 3. 운영 영향이 있으면 위험도(낮음/중간/높음)를 먼저 적는다.
 4. 모호하면 추측하지 말고 검증 절차를 같이 준다.
@@ -42,9 +42,8 @@ description: "Use Minecraft Java reference workflows for commands, NBT, item com
 
 ### 1) 버전 잠금
 
-- `1.21.8`: [references/minecraft-je-1.21.8.md](references/minecraft-je-1.21.8.md)
-- `1.21.11`: [references/minecraft-je-1.21.11.md](references/minecraft-je-1.21.11.md)
-- 버전 비교 요청 시에만: [references/version-diff-1.21.8-vs-1.21.11.md](references/version-diff-1.21.8-vs-1.21.11.md)
+- 기준은 `1.21.8`: [references/minecraft-je-1.21.8.md](references/minecraft-je-1.21.8.md)
+- 다른 Minecraft 버전의 예시나 문법은 이 번들의 기준 답변에 혼합하지 않는다.
 
 ### 2) 도메인 분해
 
@@ -57,7 +56,7 @@ description: "Use Minecraft Java reference workflows for commands, NBT, item com
 
 ### 3) 운영 출력 계약
 
-출력 모드는 4개로 고정한다.
+출력 모드는 3개로 고정한다.
 
 1. 빠른 답변 모드
 - 기준 버전
@@ -76,12 +75,6 @@ description: "Use Minecraft Java reference workflows for commands, NBT, item com
 - 원인 가설(우선순위)
 - 진단 순서
 - 즉시 완화 + 근본 개선 + 롤백
-
-1. 버전 비교 모드
-- 공통 기반
-- 차이 후보
-- 깨지기 쉬운 지점
-- 마이그레이션 순서
 
 운영/장애 플레이북은 [references/multiplayer-ops-troubleshooting.md](references/multiplayer-ops-troubleshooting.md) 사용.
 
@@ -106,7 +99,7 @@ description: "Use Minecraft Java reference workflows for commands, NBT, item com
 질문 텍스트를 `모드 + 도메인 태그`로 1차 분류한다.
 
 ```bash
-./scripts/classify-mc-query.sh --query "1.21.11 서버에서 스코어보드랑 advancement 연동해줘"
+./scripts/classify-mc-query.sh --query "1.21.8 서버에서 스코어보드랑 advancement 연동해줘"
 ```
 
 ### `scripts/validate-reference-answer.sh`
