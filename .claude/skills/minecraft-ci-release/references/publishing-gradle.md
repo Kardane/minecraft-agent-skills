@@ -2,12 +2,12 @@
 
 Use these snippets only for a project that has chosen the relevant publisher. Keep
 its existing project IDs, artifact tasks, loader metadata, and release approval flow.
-The examples target Minecraft 26.x on Java 25.
+The examples target Minecraft Java 1.21.8 on Java 21.
 
 ## Release Version and Changelog
 
 Keep the mod version distinct from the computed project/artifact version. This makes
-`v1.2.3` a reliable tag for an artifact such as `1.2.3+26.2`.
+`v1.2.3` a reliable tag for an artifact such as `1.2.3+1.21.8`.
 
 ```kotlin
 val modVersion = providers.gradleProperty("mod_version").orNull
@@ -43,56 +43,41 @@ tasks.register("verifyReleaseVersion") {
 ```
 
 Use a changelog heading such as `## [1.2.3] — 2026-09-04`. Do not look up a heading
-from `project.version`, because it includes `+26.2`; `substringAfter` also must not
+from `project.version`, because it includes `+1.21.8`; `substringAfter` also must not
 be used without an explicit missing-heading check because it can return the entire
 file.
 
 ## Modrinth with Minotaur
 
-The current Gradle Plugin Portal release is `com.modrinth.minotaur` `2.9.0`. For a
-Minecraft 26.x Fabric project, upload the primary `jar` task. Current Minecraft is
-unobfuscated, so a new 26.x Fabric build should not assume `remapJar` exists.
-Give release artifacts loader-distinct classifiers when Fabric and NeoForge could
-otherwise produce the same basename.
+The current Gradle Plugin Portal release is `com.modrinth.minotaur` `2.9.0`. For a Minecraft 1.21.8 Fabric Loom project, publish the remapped production artifact (`remapJar`) rather than the development `jar`. Confirm the task exists in the target project before wiring the publisher.
 
 ```kotlin
-import org.gradle.api.tasks.bundling.Jar
+import net.fabricmc.loom.task.RemapJarTask
 
 plugins {
     id("com.modrinth.minotaur") version "2.9.0"
 }
+
+val productionJar = tasks.named<RemapJarTask>("remapJar")
 
 modrinth {
     token.set(providers.environmentVariable("MODRINTH_TOKEN"))
     projectId.set(providers.gradleProperty("modrinth_project_id"))
     versionNumber.set(version.toString())
     versionType.set("release")
-    uploadFile.set(tasks.named<Jar>("jar"))
+    uploadFile.set(productionJar)
     gameVersions.add(minecraftVersion)
     loaders.add("fabric")
     changelog.set(changelogFor(modVersion))
 }
 
-tasks.named<Jar>("jar") {
-    archiveClassifier.set("fabric")
-}
 tasks.named("modrinth") {
     dependsOn(tasks.named("verifyReleaseVersion"))
+    dependsOn(productionJar)
 }
 ```
 
-For a retained legacy Fabric Loom project that produces the distributable
-`remapJar`, select that task explicitly instead:
-
-```kotlin
-uploadFile.set(tasks.named("remapJar"))
-```
-
-Confirm the task name and the produced file in that legacy project before changing
-the selection. NeoForge and multi-loader builds can have different platform tasks;
-configure each output independently. For a named NeoForge output, use its actual
-archive task and set `archiveClassifier` to `neoforge`; do not assume either loader
-uses the other one's task.
+Confirm that `remapJar` is the distributable artifact in the exact Fabric Loom project before changing publisher wiring.
 
 ## CurseForge with CurseForgeGradle
 
@@ -101,33 +86,33 @@ The current Gradle Plugin Portal release is
 publishes to CurseForge.
 
 ```kotlin
-import org.gradle.api.tasks.bundling.Jar
+import net.fabricmc.loom.task.RemapJarTask
 
 plugins {
     id("net.darkhax.curseforgegradle") version "1.3.33"
 }
+
+val productionJar = tasks.named<RemapJarTask>("remapJar")
 
 tasks.register<net.darkhax.curseforgegradle.TaskPublishCurseForge>("curseforge") {
     apiToken = providers.environmentVariable("CURSEFORGE_TOKEN").orNull ?: ""
 
     val mainFile = upload(
         providers.gradleProperty("curseforge_project_id").get(),
-        tasks.named<Jar>("jar")
+        productionJar
     )
     mainFile.changelogType = "markdown"
     mainFile.changelog = changelogFor(modVersion)
     mainFile.releaseType = "release"
     mainFile.addGameVersion(minecraftVersion)
     mainFile.addModLoader("Fabric")
-    mainFile.addJavaVersion("Java 25")
+    mainFile.addJavaVersion("Java 21")
     mainFile.addEnvironment("Client", "Server")
 }
 
-tasks.named<Jar>("jar") {
-    archiveClassifier.set("fabric")
-}
 tasks.named("curseforge") {
     dependsOn(tasks.named("verifyReleaseVersion"))
+    dependsOn(productionJar)
 }
 ```
 
