@@ -1,0 +1,6 @@
+interface:
+  display_name: "Minecraft Polymer Server Content"
+  short_description: "Build Polymer 0.13.13 server-side content projections for vanilla clients"
+  default_prompt: "Use $minecraft-polymer-server-content for Minecraft Java 1.21.8 Fabric work whose primary mechanism is Polymer 0.13.13+1.21.8: real server-side custom items/blocks/entities projected to vanilla clients, generated resource packs, textured blocks, virtual entities, and Polymer-specific networking. Keep gameplay truth outside the projection layer and hand vanilla-client proof to $fabric-server-validation."
+policy:
+  allow_implicit_invocation: true

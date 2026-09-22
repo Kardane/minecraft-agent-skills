@@ -20,11 +20,12 @@ This fork intentionally removes broad or overlapping skills so an agent is less 
 | `minecraft-ci-release` | CI, artifact publishing, versioning, GitHub Actions, Modrinth, and CurseForge release workflows |
 | `minecraft-imagegen` | Minecraft-oriented concept art, pack icons, thumbnails, textures, and UI mockups |
 | `minecraft-server-admin` | Server hosting, RCON automation, backups, proxies, JVM/runtime operations, deployment, and troubleshooting |
-| `minecraft-fabric-server-dev` | Fabric server implementation: lifecycle/threading, networking, state/config, commands/permissions, performance, Mixin/Polymer, and source analysis |
+| `minecraft-fabric-server-dev` | Fabric server implementation: lifecycle/threading, networking, state/config, commands/permissions, performance, Mixin, and source analysis |
 | `fabric-server-validation` | Fabric GameTest, Carpet fake-player runtime validation, protocol/client compatibility, and E2E evidence |
 | `minecraft-java-content-engineering` | Minecraft Java datapacks, resource packs, and worldgen data/schema/registry-graph engineering |
 | `minecraft-java-world-nbt` | Safe inspection, diffing, and targeted edits for Java world NBT and Anvil region files |
 | `minecraft-worldedit-engineering` | WorldEdit 7.3.16 API integration for Fabric: EditSession, Region, Mask, Pattern, clipboard/history, and safe live-world mutation |
+| `minecraft-polymer-server-content` | Polymer 0.13.13+1.21.8 item/block/entity projection, generated resource packs, virtual entities, and Polymer networking |
 
 ## Intentionally removed
 
@@ -48,6 +49,8 @@ The Fabric specialist skills included in this bundle provide the following imple
 - `minecraft-fabric-server-dev`
 - `fabric-server-validation`
 - `minecraft-java-content-engineering`
+- `minecraft-worldedit-engineering`
+- `minecraft-polymer-server-content`
 
 ## Installation
 
@@ -80,7 +83,7 @@ For a Fabric server-side project, use the narrowest skill that matches the task.
 
 | Task | Preferred skill |
 | --- | --- |
-| Fabric Java code, lifecycle/threading, networking, persistence/config, commands/permissions, performance, Mixin/Polymer | `minecraft-fabric-server-dev` |
+| Fabric Java code, lifecycle/threading, networking, persistence/config, commands/permissions, performance, Mixin | `minecraft-fabric-server-dev` |
 | Fabric GameTest, Carpet fake-player/tick-controlled reproduction, E2E, client compatibility checks | `fabric-server-validation` |
 | Datapacks/resource packs, worldgen JSON/schema/registry graphs, recipes, loot, models, and pack assets | `minecraft-java-content-engineering` |
 | Vanilla command syntax, selectors, scoreboards, mcfunction logic | `minecraft-commands-scripting` |
@@ -88,6 +91,7 @@ For a Fabric server-side project, use the narrowest skill that matches the task.
 | RCON automation, hosting, deployment, backup, proxy, JVM/runtime operations | `minecraft-server-admin` |
 | Offline `.dat` / `.mca` inspection, diffing, and targeted world-data edits | `minecraft-java-world-nbt` |
 | WorldEdit API integration, Region/Mask/Pattern edits, clipboard/schematic flows, or undo-aware live-world mutation | `minecraft-worldedit-engineering` |
+| Polymer item/block/entity projection, generated resource-pack integration, virtual entities, or Polymer networking | `minecraft-polymer-server-content` |
 | Visual concepts and raster assets | `minecraft-imagegen` |
 
 Version-sensitive APIs should always be checked against the exact target Minecraft/Fabric version rather than copied from an older 1.20.x or early 1.21.x example.
