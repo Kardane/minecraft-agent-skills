@@ -1,35 +1,66 @@
-# Minecraft Agent Skills
+# Minecraft Agent Skills — Fabric Server Companion
 
-5 complementary skills for Minecraft commands, releases, world generation, art, and server administration.
-Supports Minecraft 26.x with examples for 1.21.x.
-Use the skill folders directly or install the Codex or Claude Code plugin.
+A trimmed fork of [Jahrome907/minecraft-agent-skills](https://github.com/Jahrome907/minecraft-agent-skills), focused on skills that complement a **Minecraft Java Edition Fabric server-side development workflow**.
 
-## Install
+The intended baseline is:
 
-Install one copy of each skill for the host you use. Preserve unrelated local
-skills when a target already exists. Copy only the selected skill folders if
-you do not need the whole bundle; do not copy this repository's `AGENTS.md`
-into a Minecraft project.
+- Minecraft Java Edition **1.21.8 or newer**
+- **Fabric** as the primary mod loader
+- Server-side mod development where possible
+- Java 21 for the 1.21.x line
+- Codex / Claude Code agent-skill workflows
 
-| Host | Copy or install |
+This fork intentionally removes broad or overlapping skills so an agent is less likely to route a Fabric task into Paper/Bukkit, NeoForge, Forge, or multiloader guidance.
+
+## Included skills
+
+| Skill | Purpose |
 | --- | --- |
-| Codex | `.agents/skills/` into the project's `.agents/skills/` |
-| Older Codex hosts | `.codex/skills/` only if that host uses the legacy location |
-| Claude Code | `.claude/skills/` into the project's `.claude/skills/` |
-| Plugin | `.agents/plugins/marketplace.json` and `plugins/minecraft-codex-skills/` |
+| `minecraft-commands-scripting` | Vanilla commands, selectors, scoreboards, NBT, and RCON automation |
+| `minecraft-ci-release` | CI, artifact publishing, versioning, GitHub Actions, Modrinth, and CurseForge release workflows |
+| `minecraft-world-generation` | Biomes, dimensions, configured/placed features, structures, and worldgen data |
+| `minecraft-imagegen` | Minecraft-oriented concept art, pack icons, thumbnails, textures, and UI mockups |
+| `minecraft-server-admin` | Server hosting, JVM/runtime operations, backups, proxies, deployment, and troubleshooting |
 
-For a Codex plugin install, keep the marketplace file and plugin directory under
-the same project root, open the plugins surface, and install
-`minecraft-codex-skills`. For Claude Code, run:
+## Intentionally removed
+
+The following upstream skills were removed because they overlap with a separate Fabric-focused specialist bundle or are outside this fork's scope.
+
+| Removed skill | Reason |
+| --- | --- |
+| `minecraft-modding` | Replaced by a Fabric server-side development specialist skill |
+| `minecraft-testing` | Replaced by a Fabric-specific validation and GameTest/E2E skill |
+| `minecraft-datapack` | Covered by the Java content-engineering skill |
+| `minecraft-resource-pack` | Covered by the Java content-engineering skill |
+| `minecraft-multiloader` | Not needed for a Fabric-only workflow |
+| `minecraft-plugin-dev` | Paper/Bukkit/Spigot plugin development is out of scope |
+| `minecraft-essentials-ops` | EssentialsX operations are out of scope |
+| `minecraft-worldedit-ops` | WorldEdit plugin operations are out of scope |
+
+The retained skills route Fabric implementation work toward these companion specialist skills when they are available:
+
+- `minecraft-fabric-server-dev`
+- `fabric-server-validation`
+- `minecraft-java-content-engineering`
+
+## Installation
+
+Install only one copy of each skill for the host you use. Loading both a raw skill tree and the packaged plugin can expose duplicates.
+
+| Host | Install path |
+| --- | --- |
+| Codex | Copy `.agents/skills/` into the project's `.agents/skills/` |
+| Older Codex hosts | Use `.codex/skills/` only if that host still expects the legacy location |
+| Claude Code | Copy `.claude/skills/` into the project's `.claude/skills/` |
+| Plugin bundle | Keep `.agents/plugins/marketplace.json` and `plugins/minecraft-codex-skills/` together |
+
+For Claude Code, the bundled plugin can also be loaded directly:
 
 ```bash
 claude --plugin-dir ./plugins/minecraft-codex-skills
 ```
 
-The raw folders and plugin are alternative installation methods. Loading both
-can expose duplicate skills. `minecraft-imagegen` needs an image-generation
-tool supplied by the host or an already connected integration; installing this
-bundle or selecting a model does not add that tool.
+`minecraft-imagegen` still requires image-generation capability from the host or another connected tool.
 
 <!-- markdownlint-disable MD033 -->
 <p align="center">
@@ -37,43 +68,67 @@ bundle or selecting a model does not add that tool.
 </p>
 <!-- markdownlint-enable MD033 -->
 
-## Skills
+## Recommended routing
 
-| Skill | Use it for |
+For a Fabric server-side project, use the narrowest skill that matches the task.
+
+| Task | Preferred skill |
 | --- | --- |
-| `minecraft-commands-scripting` | Commands, scoreboards, NBT, and RCON scripting |
-| `minecraft-ci-release` | GitHub Actions and Modrinth/CurseForge releases |
-| `minecraft-world-generation` | Biomes, dimensions, structures, and features |
-| `minecraft-imagegen` | Pack art, concepts, thumbnails, and UI mockups |
-| `minecraft-server-admin` | Hosting, tuning, backups, proxies, and operations |
+| Fabric Java code, Fabric API, Mixin, server lifecycle, networking | `minecraft-fabric-server-dev` |
+| Fabric GameTest, runtime validation, E2E, client compatibility checks | `fabric-server-validation` |
+| Datapacks, resource packs, mcfunction, recipes, loot, assets | `minecraft-java-content-engineering` |
+| Vanilla command syntax, selectors, scoreboards, RCON | `minecraft-commands-scripting` |
+| Biomes, dimensions, features, structures | `minecraft-world-generation` |
+| GitHub Actions and release automation | `minecraft-ci-release` |
+| Hosting, deployment, backup, proxy, JVM/runtime operations | `minecraft-server-admin` |
+| Visual concepts and raster assets | `minecraft-imagegen` |
 
-## Usage
+Version-sensitive APIs should always be checked against the exact target Minecraft/Fabric version rather than copied from an older 1.20.x or early 1.21.x example.
 
-Describe the task and Minecraft version. For example:
+## Example requests
 
-- "Write an RCON-safe scoreboard maintenance command for a 1.21.x server."
-- "Add a custom world-generation feature and validate its data."
-- "Review this Velocity configuration and suggest changes."
+```text
+Add a Fabric 1.21.8 server-side command without requiring a client mod.
+```
 
-The agent reads the relevant skill and uses your project's version settings.
-Choose your model and tools in Codex or Claude Code.
+```text
+Validate this Fabric GameTest setup and check whether a vanilla client can join.
+```
 
-Bundled validators check file structure and common mistakes. Test builds and
-in-game behavior in your Minecraft project.
-See the [September review notes](docs/skill-audit-2026-09.md) for fixes and sources.
+```text
+Create the datapack assets required by this server-side Fabric feature.
+```
 
-## Maintaining the bundle
+```text
+Add a custom placed feature for Minecraft 1.21.8 and verify the registry/data layout.
+```
 
-Use Node 22 or newer and Bash (Git Bash works on Windows). Edit
-`.agents/skills/`, then run:
+## Maintaining this fork
+
+Treat `.agents/skills/` as the canonical skill tree.
+
+After changing a canonical skill, synchronize the mirrors and run the repository checks:
 
 ```bash
 npm run sync:skills
 npm run check
 ```
 
-The sync command refreshes `.codex/skills/`, `.claude/skills/`, and the plugin
-bundle. The copied skill directories do not need the repository's Node tooling.
+The sync step refreshes:
+
+- `.codex/skills/`
+- `.claude/skills/`
+- `plugins/minecraft-codex-skills/skills/`
+
+The copied skill directories are self-contained and do not require this repository's Node tooling in the target Minecraft project.
+
+## Upstream
+
+This repository is derived from:
+
+- [Jahrome907/minecraft-agent-skills](https://github.com/Jahrome907/minecraft-agent-skills)
+
+The trimming in this fork is intentional and optimized for a Fabric-first, server-side workflow rather than broad Minecraft ecosystem coverage.
 
 ## License
 
