@@ -1,6 +1,6 @@
 # minecraft-codex-skills
 
-This plugin packages the same 13 Minecraft skills for Codex and Claude Code.
+This plugin packages the same 10 Minecraft skills for Codex and Claude Code.
 `minecraft-imagegen` requires a host with image-generation support.
 
 ## Install

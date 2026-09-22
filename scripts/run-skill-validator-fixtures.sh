@@ -266,52 +266,6 @@ expect_fail_contains "ci-release strict warnings" "strict mode failed" \
 expect_temp_skill_pass "ci-release standalone installed mirror" \
   ./.codex/skills/minecraft-ci-release
 
-expect_path "tests/fixtures/validators/plugin-dev/valid"
-expect_path "tests/fixtures/validators/plugin-dev/valid-paper-plugin"
-expect_path "tests/fixtures/validators/plugin-dev/valid-strict-reload-subcommand"
-expect_path "tests/fixtures/validators/plugin-dev/valid-newer-api-version"
-expect_path "tests/fixtures/validators/plugin-dev/invalid"
-expect_path "tests/fixtures/validators/plugin-dev/invalid-yaml"
-expect_path "tests/fixtures/validators/plugin-dev/invalid-api-version"
-expect_path "tests/fixtures/validators/plugin-dev/invalid-api-version-zero-patch"
-expect_path "tests/fixtures/validators/plugin-dev/invalid-paper-plugin"
-expect_path "tests/fixtures/validators/plugin-dev/invalid-reload-misuse"
-expect_pass "plugin-dev valid" \
-  ./.agents/skills/minecraft-plugin-dev/scripts/validate-plugin-layout.sh \
-  --root tests/fixtures/validators/plugin-dev/valid
-expect_pass_contains "plugin-dev valid paper-plugin.yml only" "using paper-plugin.yml as the active descriptor" \
-  ./.agents/skills/minecraft-plugin-dev/scripts/validate-plugin-layout.sh \
-  --root tests/fixtures/validators/plugin-dev/valid-paper-plugin-only --strict
-expect_pass "plugin-dev valid paper-plugin.yml" \
-  ./.agents/skills/minecraft-plugin-dev/scripts/validate-plugin-layout.sh \
-  --root tests/fixtures/validators/plugin-dev/valid-paper-plugin
-expect_pass "plugin-dev valid strict reload subcommand" \
-  ./.agents/skills/minecraft-plugin-dev/scripts/validate-plugin-layout.sh \
-  --root tests/fixtures/validators/plugin-dev/valid-strict-reload-subcommand \
-  --strict
-expect_pass_contains "plugin-dev valid newer api-version warns" "newer than the last documented 1.21.x patch" \
-  ./.agents/skills/minecraft-plugin-dev/scripts/validate-plugin-layout.sh \
-  --root tests/fixtures/validators/plugin-dev/valid-newer-api-version
-expect_fail_contains "plugin-dev invalid" "api-version has invalid format" \
-  ./.agents/skills/minecraft-plugin-dev/scripts/validate-plugin-layout.sh \
-  --root tests/fixtures/validators/plugin-dev/invalid
-expect_fail_contains "plugin-dev invalid yaml" "plugin.yml is not valid YAML" \
-  ./.agents/skills/minecraft-plugin-dev/scripts/validate-plugin-layout.sh \
-  --root tests/fixtures/validators/plugin-dev/invalid-yaml
-expect_fail_contains "plugin-dev invalid api-version range" "api-version is outside the documented 26.x / 1.21.x skill scope" \
-  ./.agents/skills/minecraft-plugin-dev/scripts/validate-plugin-layout.sh \
-  --root tests/fixtures/validators/plugin-dev/invalid-api-version
-expect_fail_contains "plugin-dev invalid api-version zero patch" "release must be a positive integer without leading zeroes" \
-  ./.agents/skills/minecraft-plugin-dev/scripts/validate-plugin-layout.sh \
-  --root tests/fixtures/validators/plugin-dev/invalid-api-version-zero-patch
-expect_fail_contains "plugin-dev invalid paper-plugin.yml" "paper-plugin.yml missing key: api-version" \
-  ./.agents/skills/minecraft-plugin-dev/scripts/validate-plugin-layout.sh \
-  --root tests/fixtures/validators/plugin-dev/invalid-paper-plugin
-expect_fail_contains "plugin-dev invalid reload misuse strict" "strict mode failed" \
-  ./.agents/skills/minecraft-plugin-dev/scripts/validate-plugin-layout.sh \
-  --root tests/fixtures/validators/plugin-dev/invalid-reload-misuse \
-  --strict
-
 imagegen_workspace="$(mktemp -d)"
 imagegen_install_root="$(mktemp -d)"
 imagegen_skill_dir="$imagegen_install_root/local/skills/minecraft-imagegen"

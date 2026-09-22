@@ -1,6 +1,6 @@
 # Minecraft Agent Skills
 
-13 skills for Minecraft mods, plugins, datapacks, art, and server administration.
+10 skills for Minecraft mods, datapacks, art, testing, releases, and server administration.
 Supports Minecraft 26.x, with examples for 1.21.x and Forge 1.20.1.
 Use the skill folders directly or install the Codex or Claude Code plugin.
 
@@ -42,7 +42,6 @@ bundle or selecting a model does not add that tool.
 | Skill | Use it for |
 | --- | --- |
 | `minecraft-modding` | NeoForge, Fabric, and Forge 1.20.1 mods |
-| `minecraft-plugin-dev` | Paper, Bukkit, and Spigot plugins |
 | `minecraft-datapack` | Vanilla datapacks, functions, loot, and advancements |
 | `minecraft-commands-scripting` | Commands, scoreboards, NBT, and RCON scripting |
 | `minecraft-multiloader` | Architectury projects targeting NeoForge and Fabric |
@@ -52,14 +51,12 @@ bundle or selecting a model does not add that tool.
 | `minecraft-resource-pack` | Textures, models, sounds, fonts, and shaders |
 | `minecraft-imagegen` | Pack art, concepts, thumbnails, and UI mockups |
 | `minecraft-server-admin` | Hosting, tuning, backups, proxies, and operations |
-| `minecraft-worldedit-ops` | Safe WorldEdit selections, schematics, and brushes |
-| `minecraft-essentials-ops` | EssentialsX configuration, moderation, and economy |
 
 ## Usage
 
 Describe the task and Minecraft version. For example:
 
-- "Fix this Paper 1.21.11 command without upgrading the server."
+- "Add a Fabric 1.21.8 server-side command without requiring a client mod."
 - "Add a 26.2 datapack recipe and verify its files."
 - "Review this Velocity configuration and suggest changes."
 

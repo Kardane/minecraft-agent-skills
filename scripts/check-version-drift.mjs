@@ -123,22 +123,6 @@ const checks = [
     ]
   },
   {
-    file: ".agents/skills/minecraft-plugin-dev/SKILL.md",
-    required: [
-      /paper-api:26\.2\.build\.\+/,
-      /JavaLanguageVersion\.of\(25\)/,
-      /api-version: '26\.2'/
-    ]
-  },
-  {
-    file: ".agents/skills/minecraft-plugin-dev/scripts/validate-plugin-layout.sh",
-    required: [
-      /CURRENT_API_RELEASE=2/,
-      /\^26\\\.\(\[1-9\]\[0-9\]\*\)\$/,
-      /26\.x \/ 1\.21\.x skill scope/
-    ]
-  },
-  {
     file: ".agents/skills/minecraft-testing/SKILL.md",
     required: [
       /mockbukkit-v26\.2:4\.116\.1/,

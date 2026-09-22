@@ -1,6 +1,6 @@
 # minecraft-agent-skills
 
-This repository contains 13 Minecraft skills and a plugin for Codex and Claude Code.
+This repository contains 10 Minecraft skills and a plugin for Codex and Claude Code.
 
 ## Editing
 
