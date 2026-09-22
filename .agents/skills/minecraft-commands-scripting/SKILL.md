@@ -1,6 +1,6 @@
 ---
 name: minecraft-commands-scripting
-description: "Write and debug Minecraft Java 26.x and 1.21.x commands, selectors, execute chains, scoreboards, NBT, and RCON scripts. Use for command-only work; use minecraft-java-content-engineering for complete datapack structures."
+description: "Write and debug Minecraft Java 1.21.8 commands, selectors, execute chains, scoreboards, NBT, and RCON scripts. Use for command-only work; use minecraft-java-content-engineering for complete datapack structures."
 ---
 
 # Minecraft Commands & Scripting Skill
@@ -37,7 +37,7 @@ skill file. Copy and adapt the example scripts as needed.
 
 Use [references/command-reference.md](references/command-reference.md) for the
 relevant command family. It includes version boundaries for item components,
-attributes, text events, gamerules, and 26.x world clocks. Do not run example
+attributes, text events, gamerules, and 1.21.8 time/weather syntax. Do not run example
 blocks as a batch; each demonstrates a separate operation.
 
 ## RCON Scripting
