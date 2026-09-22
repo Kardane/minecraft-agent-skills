@@ -1,0 +1,6 @@
+interface:
+  display_name: "Minecraft WorldEdit Engineering"
+  short_description: "Build safe WorldEdit 7.3.16 API integrations for Fabric"
+  default_prompt: "Use $minecraft-worldedit-engineering for Minecraft Java 1.21.8 Fabric features whose primary mechanism is the WorldEdit 7.3.16 public API: FabricAdapter, Region, Mask, Pattern, EditSession, clipboard/schematic transforms, and history/undo. Prefer direct API integration over executing WorldEdit command strings."
+policy:
+  allow_implicit_invocation: true

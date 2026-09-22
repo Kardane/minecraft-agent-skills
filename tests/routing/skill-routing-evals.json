@@ -166,6 +166,38 @@
       ]
     },
     {
+      "id": "worldedit-api-region-replace",
+      "prompt": "Fabric 1.21.8 모드에서 WorldEdit 명령어 없이 API로 100x100 영역의 stone만 deepslate로 교체해줘",
+      "capability": "worldedit-api-engineering",
+      "expected_primary": "minecraft-worldedit-engineering",
+      "allowed_supporting": [
+        "minecraft-fabric-server-dev"
+      ]
+    },
+    {
+      "id": "worldedit-mask-pattern",
+      "prompt": "WorldEdit Region, Mask, Pattern API를 조합해서 노출된 stone만 여러 블록 패턴으로 바꾸는 Fabric 기능을 설계해줘",
+      "capability": "worldedit-api-engineering",
+      "expected_primary": "minecraft-worldedit-engineering",
+      "allowed_supporting": []
+    },
+    {
+      "id": "worldedit-history-undo",
+      "prompt": "플레이어가 실행한 WorldEdit API 편집을 LocalSession history에 넣어서 나중에 undo할 수 있게 구현해줘",
+      "capability": "worldedit-api-engineering",
+      "expected_primary": "minecraft-worldedit-engineering",
+      "allowed_supporting": [
+        "minecraft-fabric-server-dev"
+      ]
+    },
+    {
+      "id": "worldedit-schematic-api",
+      "prompt": "Fabric 서버 모드에서 WorldEdit API로 schematic을 읽고 회전해서 지정 위치에 안전하게 paste해줘",
+      "capability": "worldedit-api-engineering",
+      "expected_primary": "minecraft-worldedit-engineering",
+      "allowed_supporting": []
+    },
+    {
       "id": "level-dat-edit",
       "prompt": "서버를 끈 상태에서 level.dat의 특정 NBT 값을 타입 보존해서 수정하고 diff해줘",
       "capability": "offline-world-nbt",
