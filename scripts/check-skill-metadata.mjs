@@ -54,7 +54,7 @@ if (!routing) {
 }
 
 const volatileCountPattern = /\b\d+\s+Minecraft\s+skills\b/i;
-for (const file of [agentsPath, codexManifestPath, claudeManifestPath]) {
+for (const file of [readmePath, agentsPath, codexManifestPath, claudeManifestPath]) {
   const text = fs.readFileSync(file, "utf8");
   if (volatileCountPattern.test(text)) {
     errors.push(`${path.relative(root, file)}: hard-coded skill count is not allowed; derive from .agents/skills instead`);
