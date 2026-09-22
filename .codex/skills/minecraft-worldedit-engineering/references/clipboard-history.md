@@ -30,8 +30,9 @@ When a WorldEdit API operation is performed on behalf of a player:
 
 1. adapt the Fabric player to a WorldEdit Actor;
 2. get the actor's `LocalSession` from the WorldEdit `SessionManager`;
-3. perform and close the EditSession;
-4. remember that EditSession in the LocalSession when the change should be exposed to the player's WorldEdit history.
+3. perform the bounded edit through one EditSession;
+4. remember that EditSession in the LocalSession when the change should be exposed to the player's WorldEdit history;
+5. close/flush the EditSession according to the operation lifecycle rather than retaining it for reuse.
 
 EngineHub documents:
 
