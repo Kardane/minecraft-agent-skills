@@ -1,6 +1,6 @@
 ---
 name: minecraft-ci-release
-description: "Set up and review CI, artifact publishing, versioning, and release management for Minecraft 26.x or legacy 1.21.x mods and Paper plugins. Use for pipelines and releases, not gameplay implementation or server operations."
+description: "Set up and review CI, artifact publishing, versioning, and release management for Minecraft Java 1.21.8 Fabric-focused projects. Use for pipelines and releases, not gameplay implementation or server operations."
 ---
 
 # Minecraft CI / Release Skill
@@ -19,9 +19,7 @@ build an artifact and create a GitHub Release without publishing to Modrinth or
 CurseForge. Add a publisher only when the project already uses it or the user asks
 for it. Never add tokens to committed files.
 
-For Minecraft 26.x, use Java 25 and state that in workflow labels
-and examples. Legacy Minecraft 1.21.x projects stay on Java 21; retain their own
-loader and Gradle conventions instead of mechanically changing their version.
+Use Minecraft Java 1.21.8 with Java 21 in workflow labels and examples. Preserve the project's existing loader and Gradle conventions rather than changing versions as part of a CI task.
 
 Use an immutable GitHub Action revision in a protected workflow. The following refs
 were verified from the upstream tags on 2026-09-04; refresh them from the upstream
@@ -40,9 +38,9 @@ softprops/action-gh-release@v3.0.3  efb35369e0ad2afab669f228072c1b0d510eae64
 Minecraft mod versions follow: `{mod_version}+{mc_version}`
 
 ```
-1.0.0+26.2  ← mod 1.0.0 for MC 26.2
-1.2.3+26.2
-2.0.0+26.2
+1.0.0+1.21.8  ← mod 1.0.0 for MC 1.21.8
+1.2.3+1.21.8
+2.0.0+1.21.8
 ```
 
 Use a release version without the game suffix for the Git tag, and retain the
@@ -50,7 +48,7 @@ Minecraft version in the artifact version when the project uses that convention:
 
 ```text
 mod_version: 1.2.3
-project/artifact version: 1.2.3+26.2
+project/artifact version: 1.2.3+1.21.8
 tag: v1.2.3
 ```
 
@@ -63,7 +61,7 @@ The Gradle task and safe changelog extraction are in
 
 ## Core CI Workflow (NeoForge + Fabric)
 
-This is a Minecraft 26.x / Java 25 example. Its displayed check names are
+This is a Minecraft 1.21.8 / Java 21 example. Its displayed check names are
 `Build / Build (fabric)`, `Build / Build (neoforge)`, and `Build / Test` after
 the test job below is added. After the first successful pull request, copy the
 exact names GitHub displays into branch protection; workflow or job renames
@@ -95,10 +93,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
 
-      - name: Set up Java 25
+      - name: Set up Java 21
         uses: actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c
         with:
-          java-version: "25"
+          java-version: "21"
           distribution: "temurin"
 
       - name: Setup Gradle
@@ -125,11 +123,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-      - name: Set up Java 25
+      - name: Set up Java 21
         uses: actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c
         with:
           distribution: temurin
-          java-version: "25"
+          java-version: "21"
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@9c971963bec38e04b3d30dcc455b5382be2fdbfb
       - name: Run tests
@@ -161,10 +159,10 @@ jobs:
       - name: Checkout tagged source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
 
-      - name: Set up Java 25
+      - name: Set up Java 21
         uses: actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c
         with:
-          java-version: "25"
+          java-version: "21"
           distribution: "temurin"
 
       - name: Setup Gradle
@@ -238,7 +236,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       - uses: actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c
         with:
-          java-version: "25"
+          java-version: "21"
           distribution: "temurin"
       - uses: gradle/actions/setup-gradle@9c971963bec38e04b3d30dcc455b5382be2fdbfb
       - run: chmod +x gradlew
@@ -255,7 +253,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       - uses: actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c
         with:
-          java-version: "25"
+          java-version: "21"
           distribution: "temurin"
       - uses: gradle/actions/setup-gradle@9c971963bec38e04b3d30dcc455b5382be2fdbfb
       - run: ./gradlew test --no-daemon
@@ -267,7 +265,7 @@ jobs:
 
 Read [the publishing reference](references/publishing-gradle.md) only when the
 project publishes to Modrinth or CurseForge. It includes current plugin versions,
-26.x `jar` selection, explicit legacy Loom `remapJar` guidance, version verification,
+Fabric Loom `remapJar` selection for 1.21.8, version verification,
 and a parser that fails when the expected changelog heading is missing.
 
 ---
@@ -280,7 +278,7 @@ Never hardcode tokens. Read them from environment:
 # gradle.properties (committed)
 mod_id=mymod
 mod_version=1.0.0
-minecraft_version=26.2
+minecraft_version=1.21.8
 modrinth_project_id=AABBCCDD
 curseforge_project_id=123456
 
@@ -298,7 +296,7 @@ curseforge_project_id=123456
 | New features, no breaking changes | Minor: `1.1.0` |
 | Bug fixes only | Patch: `1.0.1` |
 | API/config breaking changes | Major: `2.0.0` |
-| Minecraft version update | Keep mod version, change the `+26.2` suffix |
+| Minecraft version update | Keep mod version, change the `+1.21.8` suffix |
 | Pre-release | `1.0.0-beta.1`, `1.0.0-rc.1` |
 
 ---
@@ -314,7 +312,7 @@ curseforge_project_id=123456
 - PDC-based kill tracker
 
 ### Fixed
-- Death message not appearing on Paper 26.2
+- Death message not appearing on Paper 1.21.8
 
 ## [1.0.0] — 2025-05-01
 ### Added
