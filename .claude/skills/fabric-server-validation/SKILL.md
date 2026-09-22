@@ -19,7 +19,7 @@ Turn Fabric server-side changes into a closed validation loop that Codex can exe
 2. Prefer semantic state assertions over packet existence. For synchronization behavior, authoritative server state plus client-observed state is stronger evidence than a packet trace.
 3. Use Fabric/Loom-native test and production-run facilities before inventing custom process orchestration.
 4. When Minecraft internals, mappings, lifecycle ordering, or Mixin targets are uncertain, use configured mcdev-mcp source analysis (normally through `minecraft-fabric-server-dev`) instead of guessing from another Minecraft version.
-5. Use the **integrated MCP Fabric runtime backend** for structured observation/fixture control and the **integrated Carpet player backend** for player-shaped server actions. They are primarily fast reproduction/diagnostic lanes; prefer a committed Unit/GameTest regression when the behavior can be expressed there cleanly.
+5. Use the **integrated Carpet fake-player backend** when a server-side behavior needs player-shaped use/attack/movement/look/hotbar actions but does not require a real network client. Pair it with MCP Fabric or another authoritative observer; `/player` command success is never the assertion. Prefer a committed Unit/GameTest regression when the same contract can be expressed there cleanly.
 6. Use the **integrated Mineflayer E2E backend** only when a socket-backed Minecraft connection or protocol lifecycle is materially part of the contract. A Mineflayer bot is a protocol bot, not an unmodified vanilla client.
 7. Treat Fabric Client GameTest as version-sensitive. Current Fabric API marks the client gametest package `@Experimental`; verify the project version and dependency Javadocs before using exact classes/signatures.
 8. Keep instrumentation test-only whenever practical. Do not ship packet recorders or test Mixins unless explicitly required.
@@ -57,7 +57,7 @@ Use the cheapest route that proves the requirement. See `references/validation-l
 |---|---|---|
 | A | Unit / Fabric Loader JUnit | direct input/output assertions |
 | B | Server GameTest | authoritative server/world state |
-| B+ | Structured runtime harness | MCP Fabric observations + optional Carpet fake-player actions |
+| B+ | Carpet fake-player runtime harness | player-shaped Carpet actions + authoritative server-state observations |
 | C | Fabric Client GameTest | server state + instrumented Fabric test-client state |
 | D | Loom production-run verification | remapped production artifact/environment behavior |
 | E | Vanilla-client compatibility E2E | unmodified vanilla client black-box evidence |
@@ -69,7 +69,7 @@ Selection rules:
 
 - Pure deterministic logic → A.
 - Live server/world behavior without a client contract → B. Use the integrated Fabric GameTest backend; read `references/backends/fabric-gametest.md` only when implementation details are needed.
-- Fast reproduction/diagnosis on an isolated running development server, especially when the scenario needs player-shaped actions but not a real network connection → B+ using MCP Fabric, optionally with Carpet fake players. Convert durable regressions to A/B when practical.
+- Player-shaped server interaction without a real-client/network contract → B+ using Carpet fake players, with MCP Fabric or another structured observer for assertions. Use explicit tick progression (`/tick freeze`, `/tick step`, `/tick warp`) when it makes timing deterministic. Convert durable regressions to A/B when practical.
 - “client receives/sees/synchronizes” and the relevant production initialization is active in the Client GameTest runtime → C. This proves an instrumented Fabric test-client contract, **not** vanilla compatibility.
 - Release/remapping/launcher/physical-server fidelity matters → add D.
 - The product contract explicitly says players need **no client mod / unmodified vanilla client** → add E. If faithful black-box automation is unavailable, keep the vanilla portion BLOCKED or manual rather than substituting C/F.
@@ -118,18 +118,21 @@ Follow the repository's existing conventions. Use Fabric Loader JUnit only when 
 
 When creating or repairing a 1.21.8 server GameTest, read `references/backends/fabric-gametest.md` and, when setup is uncertain, `references/backends/fabric-gametest-1.21.8-setup.md`. GameTest is an internal backend of this skill, not a separately selected skill.
 
-### Structured runtime harness: MCP Fabric + Carpet
+### Carpet fake-player runtime harness
 
-Use this lane for fast reproduction, diagnosis, fixture setup, and machine-readable runtime assertions on an isolated development dedicated server.
+Use this lane for fast reproduction and repeatable player-shaped server interaction on an isolated development dedicated server.
 
-- **MCP Fabric** is the observer/command transport: inspect blocks, entities, players, mod diagnostics, commands, and events using structured tools where available. Read `references/backends/mcpfabric-runtime.md` and `references/backends/mcpfabric-tools.md` as needed.
-- **Carpet fake player** is the actuator when the behavior specifically requires player-shaped use/attack/movement/look/hotbar/portal interactions. Read `references/backends/carpet-player-harness.md` and `references/backends/carpet-player-commands.md` as needed.
-- A successful `/player` command or MCP command is not the assertion. Follow it with authoritative state/event checks.
-- Prefer bounded state/event polling over fixed sleeps.
-- This lane is not a socket-backed client and is not vanilla-client evidence.
+- **Carpet fake player** drives the action: spawn, position, look, hotbar, move, jump, attack, use, sneak/sprint, mount/dismount, and cleanup.
+- **Carpet tick control** may freeze/step/warp time so a scenario can advance by known ticks instead of wall-clock sleeps.
+- **MCP Fabric** or an existing project observer reads authoritative server state/events. If MCP Fabric is unavailable, use the narrowest deterministic server-side diagnostic command or test hook already present in the project.
+- Follow `arrange → spawn/prime → act → advance/poll → assert → cleanup`.
+- A successful `/player` or `/tick` command is not feature evidence.
+- Fake-player `attack`/`use` semantics can differ from an actual client in edge cases such as reach or hand interaction. Do not use B+ alone to prove those client-fidelity boundaries.
+- This lane does not exercise login, encryption, socket packet timing, client prediction/rendering, or unmodified-vanilla compatibility.
 - When a B+ reproduction exposes a stable bug, add an A/B regression whenever the contract can be expressed without losing fidelity.
+- Scarpet is not part of the default backend. Introduce it only when a real project already uses it or repeated orchestration cannot be expressed cleanly with `/player`, `/tick`, and the existing observer.
 
-Read `references/structured-runtime-harness.md` before building a new Carpet/MCP scenario.
+Read `references/backends/carpet-player-harness.md`, then `references/backends/carpet-player-commands.md` only for commands needed by the scenario. Read `references/structured-runtime-harness.md` when combining Carpet with MCP Fabric.
 
 ### Fabric Client GameTest
 
