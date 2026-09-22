@@ -2,7 +2,7 @@
 
 ## NoSuchMethodError / ClassNotFoundException
 
-먼저 resolved Minecraft/mappings/Loader/Fabric API와 실제 runtime jars를 비교한다. Polymer API에서 난 오류라면 `minecraft-polymer-server-content`로 넘겨 모든 Polymer module이 같은 pinned release인지 확인한다.
+먼저 resolved Minecraft/official Mojang mappings/Loader/Fabric API와 실제 runtime jars를 비교한다. `build.gradle`에 `mappings loom.officialMojangMappings()`가 유지되는지도 확인한다. Polymer API에서 난 오류라면 `minecraft-polymer-server-content`로 넘겨 모든 Polymer module이 같은 pinned release인지 확인한다.
 
 ## InvalidInjectionException
 

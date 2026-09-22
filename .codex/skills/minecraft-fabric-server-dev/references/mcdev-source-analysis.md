@@ -18,7 +18,7 @@ Use source evidence to reduce compile-debug guessing.
 3. Retrieve the smallest useful unit with `mc_get_method` or `mc_get_class`.
 4. Use `mc_find_hierarchy` when interface/subclass ownership matters.
 5. Use `mc_find_refs` when choosing an injection point or understanding who calls a method and what it calls.
-6. Translate findings into the repository's mapping namespace if necessary, then verify by compilation.
+6. This skill's repository namespace is official Mojang mappings. If mcdev output uses another namespace, translate the exact class/method/field names to Mojang mappings before editing production code, then verify by compilation.
 
 Read `references/query-playbook.md` for efficient query patterns.
 
@@ -32,7 +32,7 @@ Before adding or moving a Mixin injection:
 - prefer an existing stable semantic hook over a brittle ordinal/local capture,
 - compile and run the relevant GameTest afterward.
 
-Do not use “this was named X in 1.21.1” as evidence for 1.21.8.
+Do not use “this was named X in 1.21.1” as evidence for 1.21.8. Do not paste Yarn-only symbols into a Mojang-mapped project without resolving their 1.21.8 Mojang names.
 
 ## Runtime boundary
 

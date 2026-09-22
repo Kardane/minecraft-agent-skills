@@ -1,6 +1,6 @@
 ---
 name: minecraft-fabric-server-dev
-description: "Minecraft Java Edition 1.21.8 Fabric 서버사이드 Java 코드를 설계, 구현, 디버깅하고 로컬 artifact를 빌드할 때 사용한다. 서버 권한/상태, networking, lifecycle/threading, persistence/config, commands/permissions, performance를 우선하며 Mixin은 필요할 때만 사용한다."
+description: "Minecraft Java Edition 1.21.8 Fabric 서버사이드 Java 코드를 official Mojang mappings 기준으로 설계, 구현, 디버깅하고 로컬 artifact를 빌드할 때 사용한다. 서버 권한/상태, networking, lifecycle/threading, persistence/config, commands/permissions, performance를 우선하며 Mixin은 필요할 때만 사용한다."
 ---
 
 # Minecraft Fabric Server Dev
@@ -55,6 +55,8 @@ description: "Minecraft Java Edition 1.21.8 Fabric 서버사이드 Java 코드�
 - Java Toolchain: `21`
 - Minecraft: `1.21.8`
 - Fabric API/Loader: `1.21.8` 호환 안정 버전으로 고정
+- Development mapping namespace: **official Mojang mappings** via `mappings loom.officialMojangMappings()`
+- Yarn mapping dependency/property를 추가하지 않는다.
 - 버전 변경은 한 축씩만 수행하고 매번 서버 기동 검증
 
 ### 3) 아키텍처 잠금
@@ -111,7 +113,6 @@ description: "Minecraft Java Edition 1.21.8 Fabric 서버사이드 Java 코드�
   - `--mod-id <id>`
   - `--loader-version <ver>`
   - `--fabric-api-version <ver>`
-  - `--yarn-mappings <ver>`
   - `--with-mixin` — Mixin config를 opt-in으로 생성
 
 생성 결과:
@@ -127,6 +128,7 @@ description: "Minecraft Java Edition 1.21.8 Fabric 서버사이드 Java 코드�
 - 주요 검사:
   - 필수 파일/디렉터리 존재
   - `minecraft_version=1.21.8`, Java 21, Fabric Loader/API 버전 키 존재
+  - `build.gradle`이 `mappings loom.officialMojangMappings()`를 사용하고 Yarn dependency/property가 없음
   - `fabric.mod.json` JSON 파싱 + `environment=server`
   - Mixin이 선언된 경우에만 config 존재/JSON 구조 검증
   - Gradle wrapper: 전체가 없으면 bootstrap 필요 경고, 일부만 존재하면 실패
@@ -171,7 +173,7 @@ repo inspect
 2. 동기화 문제면 server state → tracking/send → client observation 순서로 좁힌다.
 3. tick lag면 blocking I/O, 전역 스캔, allocation, queue growth, 반복 serialization부터 확인한다.
 4. 재시작 후 손실/오염이면 persistence ownership, dirty marking, schema migration, config reload 경계를 확인한다.
-5. 빌드/기동 실패면 버전 키, mappings, entrypoint, dependency, metadata를 확인한다.
+5. 빌드/기동 실패면 버전 키, official Mojang mappings 설정, entrypoint, dependency, metadata를 확인한다.
 6. 그 다음에만 Mixin target/충돌을 조사한다. Polymer projection 문제는 `minecraft-polymer-server-content`에 위임한다.
 
 ## Production engineering rules
@@ -233,7 +235,7 @@ repo inspect
 - Lifecycle/thread affinity/async I/O: [references/server-lifecycle-threading.md](references/server-lifecycle-threading.md)
 - Persistent state/config/reload: [references/state-config-reload.md](references/state-config-reload.md)
 - Commands/permissions/hot-path performance: [references/commands-permissions-performance.md](references/commands-permissions-performance.md)
-- Minecraft 1.21.8 소스/call graph/mapping 분석: [references/mcdev-source-analysis.md](references/mcdev-source-analysis.md)
+- Minecraft 1.21.8 소스/call graph + Mojang namespace 분석: [references/mcdev-source-analysis.md](references/mcdev-source-analysis.md)
 - mcdev-mcp 질의 패턴: [references/mcdev-query-playbook.md](references/mcdev-query-playbook.md)
 - Fabric 설정/버전 전략: [references/fabric-setup-1.21.8.md](references/fabric-setup-1.21.8.md)
 - Mixin 패턴/충돌 해소: [references/mixin-patterns.md](references/mixin-patterns.md)

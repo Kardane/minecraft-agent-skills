@@ -337,6 +337,14 @@ if grep -Fq "polymer-core" "$fabric_scaffold_root/minimal/build.gradle"; then
   echo "$FAIL fabric minimal scaffold unexpectedly includes Polymer" >&2
   exit 1
 fi
+if ! grep -Fq "mappings loom.officialMojangMappings()" "$fabric_scaffold_root/minimal/build.gradle"; then
+  echo "$FAIL fabric scaffold does not use official Mojang mappings" >&2
+  exit 1
+fi
+if grep -Eq "net\.fabricmc:yarn|yarn_mappings" "$fabric_scaffold_root/minimal/build.gradle" "$fabric_scaffold_root/minimal/gradle.properties"; then
+  echo "$FAIL fabric scaffold unexpectedly contains Yarn mappings" >&2
+  exit 1
+fi
 if [[ -e "$fabric_scaffold_root/minimal/src/main/resources/minimal.mixins.json" ]]; then
   echo "$FAIL fabric minimal scaffold unexpectedly includes Mixin config" >&2
   exit 1

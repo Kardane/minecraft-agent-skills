@@ -20,7 +20,7 @@ This fork intentionally removes broad or overlapping skills so an agent is less 
 | `minecraft-ci-release` | CI, artifact publishing, versioning, GitHub Actions, Modrinth, and CurseForge release workflows |
 | `minecraft-imagegen` | Minecraft-oriented concept art, pack icons, thumbnails, textures, and UI mockups |
 | `minecraft-server-admin` | Server hosting, RCON automation, backups, proxies, JVM/runtime operations, deployment, and troubleshooting |
-| `minecraft-fabric-server-dev` | Fabric server implementation: lifecycle/threading, networking, state/config, commands/permissions, performance, Mixin, and source analysis |
+| `minecraft-fabric-server-dev` | Fabric server implementation with official Mojang mappings: lifecycle/threading, networking, state/config, commands/permissions, performance, Mixin, and source analysis |
 | `fabric-server-validation` | Fabric GameTest, Carpet fake-player runtime validation, protocol/client compatibility, and E2E evidence |
 | `minecraft-java-content-engineering` | Minecraft Java datapacks, resource packs, and worldgen data/schema/registry-graph engineering |
 | `minecraft-java-world-nbt` | Safe inspection, diffing, and targeted edits for Java world NBT and Anvil region files |

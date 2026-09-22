@@ -22,13 +22,16 @@ done
 gp="$project_dir/gradle.properties"
 if [[ -f "$gp" ]]; then
   grep -qE '^minecraft_version=1\.21\.8$' "$gp" && pass "minecraft_version=1.21.8 고정" || bad "minecraft_version은 1.21.8이어야 합니다"
-  for key in yarn_mappings loader_version fabric_api_version; do grep -qE "^$key=" "$gp" && pass "버전 키 확인: $key" || bad "버전 키 누락: $key"; done
+  for key in loader_version fabric_api_version; do grep -qE "^$key=" "$gp" && pass "버전 키 확인: $key" || bad "버전 키 누락: $key"; done
+  if grep -qE '^yarn_mappings=' "$gp"; then bad "Yarn mapping property is not allowed; use official Mojang mappings"; else pass "Yarn mapping property 없음"; fi
   grep -qE '^(loader_version|fabric_api_version)=TODO_' "$gp" && warn_msg "TODO 버전이 남아 있습니다." || true
 fi
 
 if [[ -f "$project_dir/build.gradle" ]]; then
   bg="$(cat "$project_dir/build.gradle")"
   grep -q "fabric-loom" <<<"$bg" && pass "fabric-loom 선언 확인" || bad "fabric-loom 선언 누락"
+  if grep -Fq "mappings loom.officialMojangMappings()" <<<"$bg"; then pass "official Mojang mappings 선언 확인"; else bad "mappings loom.officialMojangMappings() 선언 누락"; fi
+  if grep -Eq "net\.fabricmc:yarn|yarn_mappings" <<<"$bg"; then bad "Yarn mapping dependency/reference is not allowed"; else pass "Yarn mapping dependency/reference 없음"; fi
   grep -q "JavaLanguageVersion.of(21)" <<<"$bg" && pass "Java 21 toolchain 선언 확인" || bad "Java 21 toolchain 누락"
   for token in fabric-loader fabric-api; do grep -q "$token" <<<"$bg" && pass "의존성 키워드 확인: $token" || bad "의존성 키워드 누락: $token"; done
 fi
