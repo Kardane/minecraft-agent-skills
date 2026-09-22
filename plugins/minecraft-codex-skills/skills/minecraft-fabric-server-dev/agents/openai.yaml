@@ -1,4 +1,4 @@
 interface:
   display_name: "Minecraft Fabric Server Dev"
   short_description: "Java 1.21.8 Fabric 서버모드 구현/디버깅"
-  default_prompt: "Use $minecraft-fabric-server-dev for Minecraft Java 1.21.8 Fabric server-side Java implementation, mappings/Mixin/Polymer integration, internals analysis, and local production builds. Hand behavior proof to $fabric-server-validation and CI/tag/publishing to $minecraft-ci-release."
+  default_prompt: "Use $minecraft-fabric-server-dev for Minecraft Java 1.21.8 Fabric server implementation. Start from server authority, lifecycle/threading, networking trust, persistence/config, commands/permissions, and hot-path performance; add Mixin or Polymer only when the requirement needs them. Hand behavior proof to $fabric-server-validation and CI/tag/publishing to $minecraft-ci-release."

@@ -1,6 +1,6 @@
 ---
 name: minecraft-fabric-server-dev
-description: "Minecraft Java Edition 1.21.8 Fabric 서버사이드 Java 코드를 설계, 구현, 디버깅하고 로컬 production artifact를 빌드할 때 사용한다. Fabric API, Mixin, Polymer, 내부 소스/매핑 분석을 담당하며 행동 검증은 fabric-server-validation, CI/tag/publishing은 minecraft-ci-release에 위임한다."
+description: "Minecraft Java Edition 1.21.8 Fabric 서버사이드 Java 코드를 설계, 구현, 디버깅하고 로컬 artifact를 빌드할 때 사용한다. 서버 권한/상태, networking, lifecycle/threading, persistence/config, commands/permissions, performance를 우선하며 Mixin/Polymer는 필요할 때만 사용한다."
 ---
 
 # Minecraft Fabric Server Dev
@@ -17,8 +17,12 @@ description: "Minecraft Java Edition 1.21.8 Fabric 서버사이드 Java 코드�
 
 - Minecraft Java Edition `1.21.8`
 - Fabric Loader + Fabric API
-- Mixin 기반 런타임 주입
-- Patbox Polymer 기반 서버 표현 계층
+- 서버 권한 모델, lifecycle/events, tick/thread affinity
+- custom payload networking과 C2S trust boundary
+- persistent state, serialization, config/reload boundary
+- Brigadier command registration과 permission gate
+- tick hot-path / allocation / I/O 성능 설계
+- 필요한 경우에만 Mixin 런타임 주입과 Polymer 서버 표현 계층
 - WSL/Linux 셸(`.sh`) 기준 자동화
 
 ## 빠른 시작
@@ -39,11 +43,12 @@ description: "Minecraft Java Edition 1.21.8 Fabric 서버사이드 Java 코드�
 
 ## 실무 워크플로우
 
-### 1) 요구사항 잠금
+### 1) 요구사항과 데이터 경계 잠금
 
-- 서버 타입: 소규모/중규모/대규모 멀티
-- 핵심 기능: 명령, 이벤트, 상태 동기화, 시각 표현
-- 위험도 분류: 낮음(편의) / 중간(진행) / 높음(경제·전투)
+- authoritative state가 무엇인지 먼저 정한다: world/player/server/transient/config.
+- 외부 입력 경계를 식별한다: command, C2S payload, config reload, filesystem, admin operation.
+- 핵심 기능을 분류한다: lifecycle/event, networking, persistence, command/permission, worldgen integration, client projection.
+- 위험도는 편의/진행/경제·전투처럼 상태 손실·권한 상승·악용 가능성 기준으로 분류한다.
 
 ### 2) 버전 잠금
 
@@ -54,19 +59,29 @@ description: "Minecraft Java Edition 1.21.8 Fabric 서버사이드 Java 코드�
 
 ### 3) 아키텍처 잠금
 
-- 기본값은 **Fabric API + 필요한 최소 Java 코드**다. 책임이 생기기 전에는 빈 service/bridge 계층이나 패키지를 미리 만들지 않는다.
-- `mixin`: Fabric API/event/callback로 요구사항을 충족할 수 없을 때만 추가하고, 정확한 target과 주입 지점을 확인한 뒤 최소 범위로 사용한다.
-- `polymer`: 바닐라 클라이언트에 custom block/item/entity/UI 표현을 투영해야 할 때만 추가한다. 단순 서버 로직/명령/상태 처리에는 기본 의존성으로 넣지 않는다.
+우선순위는 다음과 같다.
+
+1. **서버 권위**: gameplay truth는 logical server가 소유한다. 클라이언트 입력은 요청이지 사실이 아니다.
+2. **Fabric event/callback**: lifecycle/event hook으로 해결할 수 있으면 먼저 사용한다.
+3. **thread affinity**: Minecraft world/entity/registry 상태 변경은 서버 스레드 경계를 보존한다.
+4. **명시적 persistence/config**: transient state, 저장 상태, 운영 config를 서로 다른 수명 주기로 관리한다.
+5. **bounded hot path**: tick마다 전역 스캔, blocking I/O, 무제한 allocation/queue를 만들지 않는다.
+6. **Mixin**: Fabric API/event/callback로 요구사항을 충족할 수 없을 때만 최소 범위로 추가한다.
+7. **Polymer**: 바닐라 클라이언트 표현 투영이 실제 요구사항일 때만 추가한다.
+
+책임이 생기기 전에는 빈 service/bridge 계층이나 확장 포인트를 미리 만들지 않는다.
 
 ### 4) 구현 루프
 
-1. 순수 서버 로직 작성
-2. Minecraft 내부 메서드/호출 순서가 불확실하면 mcdev-mcp로 class/method/caller/callee를 확인하고, 필요 시 `references/mcdev-source-analysis.md`를 읽는다.
-3. 단위 기능 검증
-4. Fabric API로 부족한 요구사항이 있을 때만 최소 Mixin 추가
-5. 바닐라 클라이언트 표현 계층이 실제로 필요할 때만 Polymer 연결
-6. `fabric-server-validation`로 가장 싼 충분한 검증 경로를 선택해 행동 검증
-7. 로그/프로파일 점검 후 다음 기능으로 이동
+1. authoritative state와 외부 입력을 분리한다.
+2. lifecycle/event/command/network entrypoint를 Fabric API로 연결한다.
+3. C2S/command/config 입력을 서버에서 검증하고 permission/state/rate boundary를 건다.
+4. 저장이 필요한 상태는 serializer와 schema/migration 정책을 먼저 정한 뒤 persistence에 연결한다.
+5. blocking I/O나 비싼 계산은 tick hot path에서 분리하고, Minecraft 객체 접근은 서버 스레드로 되돌린다.
+6. Minecraft 내부 메서드/호출 순서가 불확실할 때만 mcdev-mcp로 exact 1.21.8 class/method/caller/callee를 확인한다.
+7. Fabric API로 부족할 때만 최소 Mixin, 바닐라 클라이언트 projection이 필요할 때만 Polymer를 추가한다.
+8. `fabric-server-validation`로 가장 싼 충분한 행동 증거를 만든다.
+9. representative load에서 로그/프로파일을 확인한 뒤 다음 기능으로 이동한다.
 
 ### 5) 검증 루프
 
@@ -155,117 +170,78 @@ repo inspect
 
 ## 문제 대응 우선순위
 
-1. 빌드 실패면 버전 키/매핑/의존성부터 확인
-2. 서버 기동 실패면 `fabric.mod.json`/entrypoint/mixins 파일 확인
-3. Mixin 실패면 시그니처/At 지점/우선순위부터 축소 검증
-4. Polymer 이상이면 서버 상태와 표시 계층 결합 여부부터 분리
+1. 권한 상승/중복 지급/상태 손실이면 authoritative state와 입력 검증부터 확인한다.
+2. 동기화 문제면 server state → tracking/send → client observation 순서로 좁힌다.
+3. tick lag면 blocking I/O, 전역 스캔, allocation, queue growth, 반복 serialization부터 확인한다.
+4. 재시작 후 손실/오염이면 persistence ownership, dirty marking, schema migration, config reload 경계를 확인한다.
+5. 빌드/기동 실패면 버전 키, mappings, entrypoint, dependency, metadata를 확인한다.
+6. 그 다음에만 Mixin target/충돌 또는 Polymer projection 문제를 조사한다.
 
-## 안티패턴
+## Production engineering rules
 
-- 기능 여러 개를 하나의 Mixin에 몰아넣는 방식
-- client API 호출을 서버 경로에 섞는 방식
-- 버전 업/다운을 한번에 여러 라이브러리로 진행하는 방식
-- 체크리스트 없이 "되겠지" 배포하는 방식
-- 서버 상태로 증명 가능한 동작을 기본적으로 Computer Use/수동 GUI 조작으로 검증하는 방식
+### Server authority and trust
 
-## 리팩토링/검증 공통 규칙 (범용)
+- client payload, command argument, config file 값은 모두 외부 입력으로 취급한다.
+- player identity/permission은 payload가 주장한 값을 믿지 말고 server context에서 가져온다.
+- 경제·전투·인벤토리 변경은 현재 server state를 다시 확인한 뒤 적용한다.
+- 반복 요청이 가능한 경로에는 rate/duplicate/idempotency 전략을 둔다.
 
-이 절은 특정 프로젝트가 아니라 Fabric 서버사이드 모드 전반에 공통 적용하는 규칙이다.
+### Lifecycle and threading
 
-### 1) 패스스루 래퍼 제거 규칙
+- event/callback이 있으면 polling tick보다 먼저 사용한다.
+- world/entity/registry mutation은 logical server thread affinity를 유지한다.
+- filesystem/database/HTTP 같은 blocking I/O를 tick callback이나 packet handler에서 직접 기다리지 않는다.
+- worker thread에는 immutable snapshot 또는 primitive DTO만 넘기고 결과 적용은 server thread로 복귀한다.
+- shutdown/reload 시 executor, queue, listener, cached state의 종료/교체 경계를 명시한다.
 
-- `A -> B`로 그대로 전달만 하는 메서드/클래스(로직 0, 검증 0, 변환 0)는 제거 후보로 본다.
-- 공개 API 유지를 위해 남겨야 하면 다음 중 하나는 반드시 있어야 한다.
-  - 입력 검증
-  - 권한/상태 게이트
-  - 타입/포맷 변환
-  - 계측/로깅/트랜잭션 경계
-- 위 조건이 없으면 호출 깊이만 늘어나므로 직접 호출로 평탄화한다.
+### Persistence and config
 
-### 2) 중첩 정책 구조 평탄화 규칙
+- transient cache, persistent gameplay state, operator config를 같은 객체 수명으로 섞지 않는다.
+- persistent state는 serializer와 schema version/migration 정책을 함께 정의한다.
+- 상태 변경 뒤 저장 dirty contract를 빠뜨리지 않는다.
+- config reload는 parse → validate → immutable snapshot 교체 순서로 처리한다.
+- registry/mapping/packet codec처럼 startup-time contract를 바꾸는 옵션은 무리하게 hot reload하지 않는다.
 
-- `Policy.InnerPolicy.method()` 형태에서 메서드가 단순 분기/비교 수준이면 평탄화한다.
-- 권장 형태:
-  - `enum Decision`
-  - `static Decision decideX(...)`
-  - `static boolean/int resolveX(...)`
-- 중첩 클래스를 유지하는 경우는 "도메인 경계 분리 이득"이 분명할 때만 허용.
+### Commands and permissions
 
-### 3) 패키지/디렉터리 정리 규칙
+- command 등록은 Fabric command callback을 우선한다.
+- Brigadier `requires` 또는 프로젝트의 permission integration으로 실행 권한과 tab exposure를 같이 제한한다.
+- command argument는 permission을 통과한 뒤에도 range, target existence, current state를 검증한다.
+- 동일한 domain operation을 command와 network handler가 각각 재구현하지 말고 검증된 server-side operation으로 모은다.
 
-- 하위 패키지에 파일 1개만 있고 의미적 경계가 약하면 부모로 승격.
-- 빈 패키지 디렉터리는 즉시 삭제.
-- 파일 이동 후 `package` 선언과 import를 항상 같은 턴에 정리.
+### Performance
 
-### 4) 참조 정합성 점검 규칙
+- 20 TPS의 정상 tick budget은 50 ms이므로 hot path에서 무제한 작업을 만들지 않는다.
+- 매 tick 모든 player/entity/chunk를 훑기보다 event-driven index, dirty set, bounded cadence를 우선한다.
+- packet fan-out과 serialization 빈도를 state change 기준으로 제한한다.
+- 최적화는 profile/representative load evidence 뒤에 한다. 단순히 async로 옮겼다는 이유로 빨라졌다고 간주하지 않는다.
 
-- 리네임/이동/병합 직후 구 경로 참조 0건을 보장.
-- 권장 점검:
-  - `rg -n "<old.package|old.class>" src/main/java src/test/java`
-  - 결과가 0건인지 확인 후 다음 단계 진행.
+### Mixin and Polymer
 
-### 5) 빌드/테스트 검증 표준
+- Mixin은 public/event API로 해결되지 않는 정확한 gap을 설명할 수 있을 때만 사용한다.
+- Polymer는 client projection 요구가 있을 때만 사용하고 authoritative state와 분리한다.
+- 두 기술 모두 core server rule의 기본 저장소나 permission boundary가 되어서는 안 된다.
 
-- 서버사이드 모드 리팩토링 후 최소 검증 명령:
-  - `GRADLE_USER_HOME=<repo>/.gradle ./gradlew test --no-daemon`
-- 큰 구조 변경일수록 `clean build`를 추가:
-  - `GRADLE_USER_HOME=<repo>/.gradle ./gradlew clean build --no-daemon`
+### Simplicity gate
 
-### 6) Mixin 안전 분기 규칙
-
-- 입력 차단/행동 제한 Mixin에는 운영 예외 분기를 명시적으로 둔다.
-  - 예: 크리에이티브, OP 권한, 관리자 태그
-- 제한 로직 실패 시 복구 동작(인벤토리 동기화 등)을 같이 둔다.
-- 안전 기본값 원칙:
-  - 보안/악용 방지 로직은 fail-closed
-  - 운영 편의 경로는 명확한 조건에서만 예외 허용
-
-### 7) 명령어/권한/문서 동기화 규칙
-
-- Brigadier 명령 트리 변경 시 다음을 한 세트로 업데이트:
-  - 실제 명령어 경로
-  - 권한 노드
-  - README 운영 문서
-- 셋 중 하나라도 누락되면 릴리즈 금지.
-
-### 8) 커밋 메시지 규칙
-
-- Conventional Commits 사용:
-  - `feat: ...`
-  - `fix: ...`
-  - `refactor: ...`
-  - `docs: ...`
-- 구조 이동/대량 삭제는 메시지에 의도를 명시:
-  - 예: `refactor: flatten package hierarchy and remove pass-through services`
-
-### 9) 과엔지니어링 점검 체크리스트
-
-- 클래스가 "의미 있는 책임" 대신 "호출 전달"만 하는가?
-- 인터페이스/전략 패턴이 실제 확장 요구보다 앞서 있는가?
-- 추상화 1단계 추가로 디버깅 경로가 길어졌는가?
-- 같은 목적의 타입/유틸 네이밍이 중복되거나 중첩되는가?
-- 테스트가 추상화 자체를 검증하느라 도메인 검증이 약해졌는가?
-
-하나라도 `예`면 먼저 단순화 방향을 검토한다.
-
-### 10) 변경 파이프라인 고정 순서
-
-1. 파일 이동/병합/삭제
-2. `package`/import/호출 경로 치환
-3. 빈 디렉터리 정리
-4. `rg`로 구 참조 0건 확인
-5. `./gradlew test --no-daemon` 검증
-6. 커밋(Conventional Commit)
-7. 푸시/릴리즈
+- 로직/검증/변환/ownership을 추가하지 않는 pass-through wrapper는 만들지 않는다.
+- 확장 요구가 없는 interface/strategy/factory를 선제적으로 추가하지 않는다.
+- 구조 변경 뒤에는 구 참조를 검색하고 최소 test/build를 실행한다.
 
 ## 참조 문서 인덱스
 
+핵심 server engineering reference를 먼저 고르고, Mixin/Polymer 문서는 실제 필요가 있을 때만 연다.
+
+- Networking/C2S trust/rate boundary: [references/server-networking-security.md](references/server-networking-security.md)
+- Lifecycle/thread affinity/async I/O: [references/server-lifecycle-threading.md](references/server-lifecycle-threading.md)
+- Persistent state/config/reload: [references/state-config-reload.md](references/state-config-reload.md)
+- Commands/permissions/hot-path performance: [references/commands-permissions-performance.md](references/commands-permissions-performance.md)
 - Minecraft 1.21.8 소스/call graph/mapping 분석: [references/mcdev-source-analysis.md](references/mcdev-source-analysis.md)
 - mcdev-mcp 질의 패턴: [references/mcdev-query-playbook.md](references/mcdev-query-playbook.md)
 - Fabric 설정/버전 전략: [references/fabric-setup-1.21.8.md](references/fabric-setup-1.21.8.md)
 - Mixin 패턴/충돌 해소: [references/mixin-patterns.md](references/mixin-patterns.md)
 - Polymer 서버 사용 패턴: [references/polymer-server-usage.md](references/polymer-server-usage.md)
-- 검증/릴리스 체크리스트: [references/verification-release-checklist.md](references/verification-release-checklist.md)
+- 검증 체크리스트: [references/verification-release-checklist.md](references/verification-release-checklist.md)
 - 운영 장애 시그니처: [references/runtime-failure-signatures.md](references/runtime-failure-signatures.md)
 
 ## 출력 템플릿
@@ -275,7 +251,7 @@ repo inspect
 
 요약
 - 목표: ...
-- 범위: core | mixin | polymer
+- 범위: lifecycle | networking | state | config | command | permission | performance | mixin | polymer
 
 구현 단계
 1. ...

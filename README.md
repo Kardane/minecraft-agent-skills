@@ -16,12 +16,12 @@ This fork intentionally removes broad or overlapping skills so an agent is less 
 
 | Skill | Purpose |
 | --- | --- |
-| `minecraft-commands-scripting` | Vanilla commands, selectors, scoreboards, NBT, and RCON automation |
+| `minecraft-commands-scripting` | Vanilla command syntax, selectors, scoreboards, NBT/components, and mcfunction logic |
 | `minecraft-ci-release` | CI, artifact publishing, versioning, GitHub Actions, Modrinth, and CurseForge release workflows |
 | `minecraft-world-generation` | Biomes, dimensions, configured/placed features, structures, and worldgen data |
 | `minecraft-imagegen` | Minecraft-oriented concept art, pack icons, thumbnails, textures, and UI mockups |
-| `minecraft-server-admin` | Server hosting, JVM/runtime operations, backups, proxies, deployment, and troubleshooting |
-| `minecraft-fabric-server-dev` | Fabric server-side mod implementation, Fabric API, Mixin, Polymer, and source analysis |
+| `minecraft-server-admin` | Server hosting, RCON automation, backups, proxies, JVM/runtime operations, deployment, and troubleshooting |
+| `minecraft-fabric-server-dev` | Fabric server implementation: lifecycle/threading, networking, state/config, commands/permissions, performance, Mixin/Polymer, and source analysis |
 | `fabric-server-validation` | Fabric GameTest, runtime validation, protocol/client compatibility, and E2E evidence |
 | `minecraft-java-content-engineering` | Minecraft Java datapack and resource-pack content engineering |
 | `minecraft-java-reference-hub` | Version-pinned Minecraft Java domain and command/NBT reference workflows |
@@ -79,13 +79,13 @@ For a Fabric server-side project, use the narrowest skill that matches the task.
 
 | Task | Preferred skill |
 | --- | --- |
-| Fabric Java code, Fabric API, Mixin, server lifecycle, networking | `minecraft-fabric-server-dev` |
+| Fabric Java code, lifecycle/threading, networking, persistence/config, commands/permissions, performance, Mixin/Polymer | `minecraft-fabric-server-dev` |
 | Fabric GameTest, runtime validation, E2E, client compatibility checks | `fabric-server-validation` |
 | Datapacks, resource packs, mcfunction, recipes, loot, assets | `minecraft-java-content-engineering` |
-| Vanilla command syntax, selectors, scoreboards, RCON | `minecraft-commands-scripting` |
+| Vanilla command syntax, selectors, scoreboards, mcfunction logic | `minecraft-commands-scripting` |
 | Biomes, dimensions, features, structures | `minecraft-world-generation` |
 | GitHub Actions and release automation | `minecraft-ci-release` |
-| Hosting, deployment, backup, proxy, JVM/runtime operations | `minecraft-server-admin` |
+| RCON automation, hosting, deployment, backup, proxy, JVM/runtime operations | `minecraft-server-admin` |
 | Visual concepts and raster assets | `minecraft-imagegen` |
 
 Version-sensitive APIs should always be checked against the exact target Minecraft/Fabric version rather than copied from an older 1.20.x or early 1.21.x example.
