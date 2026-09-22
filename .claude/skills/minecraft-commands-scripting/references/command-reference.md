@@ -278,8 +278,7 @@ data remove storage mypack:data temp
 
 ## Item and Inventory Commands
 
-Component values below target 1.21.5+ and 26.x. Earlier 1.21 releases use a
-`levels` wrapper for enchantments and JSON-encoded strings for text components.
+Component values below target Minecraft Java 1.21.8. Earlier 1.21 releases may use different enchantment/text component shapes; do not backport these examples by assumption.
 
 ```mcfunction
 # Give items
@@ -358,7 +357,7 @@ tellraw @a [{"text":"Hello ","color":"white"},{"selector":"@s","color":"gold"},{
 tellraw @a {"translate":"block.minecraft.diamond_block","color":"aqua"}
 tellraw @a {"translate":"commands.give.success.single","with":[{"text":"1"},{"translate":"item.minecraft.diamond"},{"selector":"@p"}]}
 
-# Clickable / hoverable (1.21.5+ and 26.x)
+# Clickable / hoverable (1.21.8)
 tellraw @a {text:"Click here",color:"aqua",click_event:{action:"run_command",command:"/say hi"},hover_event:{action:"show_text",value:"Run /say hi"}}
 
 # Keybind display
@@ -415,8 +414,7 @@ schedule clear mypack:delayed_grant
 
 ## Attribute Commands
 
-These names target 1.21.2+ and 26.x. Minecraft 1.21/1.21.1 still uses the
-`generic.` attribute prefix; namespaced modifier IDs apply throughout 1.21+.
+These names target Minecraft Java 1.21.8. Do not copy them into earlier 1.21 releases without checking that release's attribute identifiers.
 
 ```mcfunction
 # Get base/current value
@@ -471,25 +469,12 @@ stopsound @s
 
 ## World and Environment Commands
 
-For 26.x, `/time` operates on a world clock. Select it explicitly when the
-execution dimension is not enough; `set` and `add` return total clock ticks.
+These examples target Minecraft Java 1.21.8.
 
 ```mcfunction
-time of minecraft:overworld set noon
-time of minecraft:overworld add 1000
-time of minecraft:overworld query time
-time query gametime
-```
-
-See the [26.1 release notes](https://www.minecraft.net/en-us/article/minecraft-java-edition-26-1)
-for clock/timeline query semantics. The following time examples are for 1.21.x:
-
-```mcfunction
-# Time (legacy 1.21.x)
+# Time
 time set day
-# 6000
 time set noon
-# 13000
 time set night
 time set 0
 time add 1000
@@ -500,22 +485,13 @@ weather clear 6000
 weather rain 12000
 weather thunder 6000
 
-# Gamerules (1.21.10 and earlier camelCase names)
+# Gamerules (1.21.8 camelCase names)
 gamerule doDaylightCycle false
 gamerule doMobSpawning false
 gamerule keepInventory true
 gamerule spawnRadius 0
-# one player can skip night
 gamerule playersSleepingPercentage 0
 gamerule universalAnger true
-
-# Gamerules (1.21.11+ registry IDs)
-gamerule minecraft:advance_time false
-gamerule minecraft:spawn_mobs false
-gamerule minecraft:keep_inventory true
-gamerule minecraft:respawn_radius 0
-gamerule minecraft:players_sleeping_percentage 0
-gamerule minecraft:universal_anger true
 
 # Difficulty
 difficulty peaceful
@@ -523,20 +499,13 @@ difficulty easy
 difficulty normal
 difficulty hard
 
-# Setworldspawn
-# 1.21.8 and earlier: x y z angle
+# Set world spawn: x y z angle
 setworldspawn 0 64 0 0.0
-# 1.21.9+: x y z yaw pitch
-setworldspawn 0 64 0 0.0 0.0
 
-# Spawnpoint per player
-# 1.21.8 and earlier: x y z angle
+# Spawnpoint per player: x y z angle
 spawnpoint @s ~ ~ ~ 0.0
-# 1.21.9+: x y z yaw pitch
-spawnpoint @s ~ ~ ~ 0.0 0.0
 
 # forceload
-# keep chunks 0,0 to 31,31 loaded
 forceload add 0 0 31 31
 forceload remove 0 0 31 31
 forceload query 0 0
