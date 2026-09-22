@@ -45,6 +45,14 @@ if (!included) {
   compareSets("README.md Included skills", canonical, names);
 }
 
+const routing = section(readme, "## Recommended routing");
+if (!routing) {
+  errors.push("README.md: missing Recommended routing section");
+} else {
+  const names = [...routing.matchAll(/\| \`([a-z0-9-]+)\` \|$/gm)].map((match) => match[1]).sort();
+  compareSets("README.md Recommended routing", canonical, names);
+}
+
 const volatileCountPattern = /\b\d+\s+Minecraft\s+skills\b/i;
 for (const file of [agentsPath, codexManifestPath, claudeManifestPath]) {
   const text = fs.readFileSync(file, "utf8");
@@ -66,4 +74,4 @@ if (errors.length > 0) {
   process.exit(1);
 }
 
-console.log(`[PASS] skill metadata: ${canonical.length} canonical skills; README inventory matches; no hard-coded skill count`);
+console.log(`[PASS] skill metadata: ${canonical.length} canonical skills; README inventory/routing match; no hard-coded skill count`);

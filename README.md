@@ -24,7 +24,7 @@ This fork intentionally removes broad or overlapping skills so an agent is less 
 | `minecraft-fabric-server-dev` | Fabric server implementation: lifecycle/threading, networking, state/config, commands/permissions, performance, Mixin/Polymer, and source analysis |
 | `fabric-server-validation` | Fabric GameTest, runtime validation, protocol/client compatibility, and E2E evidence |
 | `minecraft-java-content-engineering` | Minecraft Java datapack and resource-pack content engineering |
-| `minecraft-java-reference-hub` | Version-pinned Minecraft Java domain and command/NBT reference workflows |
+| `minecraft-java-reference-hub` | Cross-domain, read-only Minecraft Java 1.21.8 reference synthesis when no narrower specialist owns the whole question |
 | `minecraft-java-world-nbt` | Safe inspection, diffing, and targeted edits for Java world NBT and Anvil region files |
 
 ## Intentionally removed
@@ -81,11 +81,13 @@ For a Fabric server-side project, use the narrowest skill that matches the task.
 | --- | --- |
 | Fabric Java code, lifecycle/threading, networking, persistence/config, commands/permissions, performance, Mixin/Polymer | `minecraft-fabric-server-dev` |
 | Fabric GameTest, runtime validation, E2E, client compatibility checks | `fabric-server-validation` |
-| Datapacks, resource packs, mcfunction, recipes, loot, assets | `minecraft-java-content-engineering` |
+| Complete datapacks/resource packs, registries, recipes, loot, models, and pack assets | `minecraft-java-content-engineering` |
 | Vanilla command syntax, selectors, scoreboards, mcfunction logic | `minecraft-commands-scripting` |
-| Biomes, dimensions, features, structures | `minecraft-world-generation` |
+| Worldgen JSON/data semantics, registry graphs, biomes, dimensions, features, structures | `minecraft-world-generation` |
 | GitHub Actions and release automation | `minecraft-ci-release` |
 | RCON automation, hosting, deployment, backup, proxy, JVM/runtime operations | `minecraft-server-admin` |
+| Offline `.dat` / `.mca` inspection, diffing, and targeted world-data edits | `minecraft-java-world-nbt` |
+| Cross-domain read-only Java Edition reference synthesis | `minecraft-java-reference-hub` |
 | Visual concepts and raster assets | `minecraft-imagegen` |
 
 Version-sensitive APIs should always be checked against the exact target Minecraft/Fabric version rather than copied from an older 1.20.x or early 1.21.x example.
