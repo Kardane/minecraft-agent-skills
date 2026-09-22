@@ -1,4 +1,4 @@
-# Fabric 1.21.8 Persistent State, Serialization, and Config Reload
+# Fabric 1.21.8 Saved Data, Serialization, and Config Reload
 
 Use this reference when a mod must survive restart, migrate stored data, or support
 operator configuration.
@@ -13,25 +13,37 @@ Do not use one object as all three:
 
 Each lifetime has different ownership, serialization, validation, and reload rules.
 
-## Persistent state
+## Persistent state with Mojang mappings
 
-Minecraft 1.21.8 Yarn exposes `PersistentState` /
-`PersistentStateManager`-style storage. Exact constructors and type wrappers are
-version-sensitive; inspect the 1.21.8 mappings before implementing.
+This skill uses **official Mojang mappings**.
 
-Primary mapping references:
+For Minecraft 1.21.8, the relevant Mojang-mapped storage concepts include:
 
-- https://maven.fabricmc.net/docs/yarn-1.21.8+build.1/
-- https://maven.fabricmc.net/docs/yarn-1.21.8+build.1/net/minecraft/command/DataCommandStorage.PersistentState.html
+- `net.minecraft.world.level.saveddata.SavedData`;
+- `net.minecraft.world.level.saveddata.SavedDataType`;
+- `net.minecraft.world.level.storage.DimensionDataStorage`;
+- `ServerLevel#getDataStorage()`.
+
+Do not copy Yarn names such as `PersistentState`, `PersistentStateManager`, or
+`ServerWorld#getPersistentStateManager()` into code produced by this skill.
+
+Exact constructors, codecs, factories, and generic types are version-sensitive.
+Inspect the resolved 1.21.8 Mojang-mapped source before implementing a custom
+`SavedData` type.
 
 For custom durable state:
 
 - choose a stable namespaced storage id;
 - define serialization and default construction together;
 - preserve unknown data when forward compatibility requires it;
-- mark state dirty after semantic mutations according to the exact API contract;
+- call the exact `SavedData#setDirty` contract after semantic mutations;
 - keep a mod-owned schema version when migrations are required;
 - do not repurpose Minecraft's `DataVersion` as the mod schema version.
+
+Useful 1.21.8 mapping references:
+
+- https://mappings.dev/1.21.8/net/minecraft/world/level/saveddata/index.html
+- https://mappings.dev/1.21.8/net/minecraft/server/level/ServerLevel.html
 
 ## Migration
 

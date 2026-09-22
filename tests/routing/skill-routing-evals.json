@@ -166,6 +166,13 @@
       ]
     },
     {
+      "id": "fabric-mojang-mappings-scaffold",
+      "prompt": "Fabric 1.21.8 서버 모드 프로젝트를 official Mojang mappings 기준으로 scaffold하고 Yarn dependency가 들어가지 않게 해줘",
+      "capability": "fabric-local-build",
+      "expected_primary": "minecraft-fabric-server-dev",
+      "allowed_supporting": []
+    },
+    {
       "id": "polymer-custom-item",
       "prompt": "Polymer로 서버에는 실제 custom item을 유지하고 바닐라 클라이언트에는 다른 item/model로 보이게 구현해줘",
       "capability": "polymer-server-content",
