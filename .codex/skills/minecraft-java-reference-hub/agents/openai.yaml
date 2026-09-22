@@ -1,4 +1,0 @@
-interface:
-  display_name: "Minecraft Java Reference Hub"
-  short_description: "Minecraft Java 1.21.8 버전 잠금형 실무 레퍼런스"
-  default_prompt: "Use $minecraft-java-reference-hub only for read-only Minecraft Java 1.21.8 questions that genuinely span multiple domains or lack a narrower specialist owner. Prefer the command, worldgen, content, Fabric, validation, server-ops, world-NBT, or image specialist for single-domain work."

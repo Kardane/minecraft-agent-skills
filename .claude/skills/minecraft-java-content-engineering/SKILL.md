@@ -1,94 +1,98 @@
 ---
 name: minecraft-java-content-engineering
-description: "Minecraft Java Edition 1.21.8의 데이터팩과 리소스팩을 설계, 구현, 검증, 배포할 때 사용한다. 데이터팩(mcfunction, function macro, loot/advancement/tag/recipe/structure NBT 등)과 리소스팩(pack.mcmeta, textures, models, blockstates, items, shaders, atlases, fonts, sounds 등)을 하나의 콘텐츠 제작 스킬에서 라우팅하며, 필요한 하위 레퍼런스만 선택적으로 읽는다."
+description: "Minecraft Java Edition 1.21.8 datapack/resource-pack authoring과 worldgen data/schema/registry graph를 설계·검증할 때 사용한다. pack 구조, data-driven content, worldgen JSON validation, asset integration을 소유하며 raw command semantics와 Fabric Java registration은 specialist에 위임한다."
 ---
 
 # Minecraft Java Content Engineering
 
 ## Routing Boundaries
 
-- `Use when`: authoring or validating a complete Minecraft Java datapack/resource-pack deliverable, its folder structure, registries, assets, or cross-file pack integration.
-- `Primary capabilities`: `pack-authoring`
-- `Do not use when`: the task is command syntax/command-only logic (`minecraft-commands-scripting`), worldgen schema/registry data (`minecraft-world-generation`), Fabric Java/Mixin/Polymer code, offline world `.dat`/`.mca` editing, or live server operations.
+- `Use when`: authoring or validating a Minecraft Java 1.21.8 datapack/resource-pack deliverable, worldgen data/schema/registry graph, pack structure, registry data, or cross-file asset integration.
+- `Primary capabilities`: `pack-authoring`, `worldgen-data-semantics`
+- `Do not use when`: the task is command syntax/selector/scoreboard logic only (`minecraft-commands-scripting`), Fabric Java registration/datagen/Mixin/Polymer (`minecraft-fabric-server-dev`), offline world `.dat`/`.mca` editing (`minecraft-java-world-nbt`), or live server operations (`minecraft-server-admin`).
 
-데이터팩과 리소스팩을 별도 활성 Skill로 두지 않고 **콘텐츠 종류에 따라 내부 레퍼런스를 라우팅**한다. 한 작업이 두 팩을 동시에 요구할 때만 양쪽 문서를 함께 읽는다.
+이 스킬은 datapack, resource pack, worldgen data를 하나의 content boundary 안에서 라우팅한다. Java loader integration은 여기서 소유하지 않는다.
 
-## 라우팅
+## Internal routing
 
-| 요청 | 사용할 내부 자료 |
+| Request | Internal material |
 |---|---|
-| commands, mcfunction, function macro, predicates, loot tables, recipes, advancements, tags, structures | `references/datapack/` |
-| textures, PNG, models, blockstates, item models, shaders, atlases, fonts, sounds | `references/resourcepack/` |
-| 데이터팩 + 리소스팩을 함께 배포하는 기능 | 양쪽 자료를 사용하되 서버 로직/클라이언트 표현의 책임을 분리 |
-| Fabric Java 코드/Mixin/Polymer 구현 | `minecraft-fabric-server-dev` |
-| 월드 `.dat`/`.mca` 직접 수정 | `minecraft-java-world-nbt` |
+| datapack structure, functions, predicates, loot, recipes, advancements, tags, structure NBT | `references/datapack/` |
+| biome, dimension, configured/placed feature, structure set, template pool, worldgen registry graph | `references/datapack/worldgen/` |
+| textures, models, blockstates, item models, shaders, atlases, fonts, sounds | `references/resourcepack/` |
+| datapack + resource pack feature | load only the relevant material from both sides |
+| Fabric Java worldgen registration/datagen wiring | `minecraft-fabric-server-dev` |
+| raw `execute` / selector / scoreboard / command-NBT semantics | `minecraft-commands-scripting` |
 
-## 컨텍스트 절약 규칙
+## Context budget
 
-1. 요청이 데이터팩이면 먼저 `references/datapack/guide.md`만 읽고 필요한 세부 레퍼런스만 추가로 읽는다.
-2. 요청이 리소스팩이면 먼저 `references/resourcepack/guide.md`만 읽고 필요한 세부 레퍼런스만 추가로 읽는다.
-3. 단순 데이터팩 작업에서 리소스팩 문서를 읽지 않는다. 반대도 동일하다.
-4. 버전은 프로젝트/요청의 실제 버전을 우선한다. 이 묶음의 기본 대상은 Java Edition 1.21.8이다.
-5. pack format, 폴더명, registry path, item/model 문법은 다른 버전 튜토리얼에서 추측하지 않는다.
+1. General datapack work starts with [the datapack guide](references/datapack/guide.md).
+2. Worldgen work starts with [the worldgen guide](references/datapack/worldgen/guide.md) and does not load unrelated resource-pack references.
+3. Resource-pack work starts with [the resource-pack guide](references/resourcepack/guide.md).
+4. Command syntax is not duplicated here; use the command specialist when the difficult part is the command itself.
+5. The repository baseline is Minecraft Java Edition 1.21.8. Do not import later-version pack formats or registry types by assumption.
 
-## 데이터팩 워크플로우
-
-필요 시 `references/datapack/guide.md`를 읽는다.
-
-기본 순서:
+## Datapack workflow
 
 ```text
-version lock
-→ pack.mcmeta / folder layout
-→ functions/data definitions
-→ deterministic validation
-→ server reload/test
-→ release/rollback
+1.21.8 lock
+→ pack.mcmeta / namespace / folder layout
+→ functions and data definitions
+→ deterministic layout/schema validation
+→ /reload or server load boundary
+→ observable behavior check
 ```
 
-스캐폴딩/정적 검증:
+Helpers:
 
 ```bash
-./scripts/datapack/create_datapack_scaffold.sh ...
-./scripts/datapack/validate_datapack_layout.sh ...
+./scripts/datapack/create_datapack_scaffold.sh --pack-name my_pack --namespace mypack --output-dir /tmp/datapacks
+./scripts/datapack/validate_datapack_layout.sh --pack-dir /tmp/datapacks/my_pack
 ```
 
-세부 문서는 `references/datapack/` 아래에 있다.
+## Worldgen workflow
 
-## 리소스팩 워크플로우
-
-필요 시 `references/resourcepack/guide.md`를 읽는다.
-
-기본 순서:
+Worldgen is a datapack data domain. Own the JSON/schema/reference graph here; hand loader-specific Java registration to the Fabric development skill.
 
 ```text
-version lock
+vanilla 1.21.8 data/datagen reference
+→ registry graph
+→ JSON / structure template placement
+→ local cross-reference validation
+→ world load / generation validation
+```
+
+Static validator:
+
+```bash
+./scripts/datapack/worldgen/validate-worldgen-json.sh --root <pack-root>
+```
+
+The validator catches structural and local-reference errors. It does not prove that every schema field is semantically valid in Minecraft 1.21.8; compare risky fields with exact-version vanilla data or version-matched datagen output.
+
+## Resource-pack workflow
+
+```text
+1.21.8 lock
 → pack.mcmeta / asset namespace
 → textures/models/items/etc.
 → static validation
 → client resource reload/test
-→ release/rollback
 ```
 
-스캐폴딩/정적 검증:
+## Cross-domain design
 
-```bash
-./scripts/resourcepack/create_resourcepack_scaffold.sh ...
-./scripts/resourcepack/validate_resourcepack_layout.sh ...
-```
+- Datapack owns server/data-driven rules.
+- Resource pack owns client-presented texture/model/font/sound assets.
+- Worldgen owns data-driven generation schema and registry references.
+- Fabric Java owns loader callbacks, code registration, datagen wiring, Mixin, and Polymer integration.
+- Shared identifiers must be documented once and reused consistently.
+- For quest/economy/RP combinations inside data-driven content, read `references/datapack/domain-integration-playbooks.md` only when needed.
 
-세부 문서는 `references/resourcepack/` 아래에 있다.
+## Completion criteria
 
-## 교차 팩 설계
-
-데이터팩과 리소스팩이 함께 필요한 기능은 다음 경계를 유지한다.
-
-- 데이터팩: 서버 규칙, 명령, registry/data-driven behavior
-- 리소스팩: 클라이언트가 표시하는 texture/model/font/sound 등
-- 동일 identifier를 공유할 경우 namespace/path를 문서화한다.
-- 한쪽 팩이 없어졌을 때의 degradation/failure mode를 확인한다.
-- Fabric/Polymer가 팩 전달이나 서버 표현을 담당하면 Java 구현은 `minecraft-fabric-server-dev`에서 처리한다.
-
-## 완료 조건
-
-컴파일/JSON 파싱만으로 PASS를 선언하지 않는다. 최소한 해당 pack의 layout validator와 실제 Minecraft reload/load 경계를 확인하고, 변경된 기능의 observable behavior를 검증한다.
+- Pack layout and JSON parse successfully.
+- Relevant local references resolve.
+- Worldgen changes pass the worldgen validator when applicable.
+- The exact 1.21.8 load/reload boundary is exercised.
+- Observable behavior is checked instead of declaring success from parsing alone.

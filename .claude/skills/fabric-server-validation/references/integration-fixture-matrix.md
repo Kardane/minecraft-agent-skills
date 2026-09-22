@@ -94,7 +94,7 @@ Minimum characteristics:
 Expected route:
 
 - inspector reports the actual version/task surface;
-- Codex does not paste current 26.2 imports/task APIs blindly;
+- Codex does not paste newer-version imports/task APIs into the 1.21.8 project blindly;
 - it uses the repository's existing tests or the least-invasive version-compatible fallback;
 - if the user requires vanilla compatibility, that requirement remains separate even when modern Client GameTest APIs are unavailable.
 

@@ -18,13 +18,11 @@ This fork intentionally removes broad or overlapping skills so an agent is less 
 | --- | --- |
 | `minecraft-commands-scripting` | Vanilla command syntax, selectors, scoreboards, NBT/components, and mcfunction logic |
 | `minecraft-ci-release` | CI, artifact publishing, versioning, GitHub Actions, Modrinth, and CurseForge release workflows |
-| `minecraft-world-generation` | Biomes, dimensions, configured/placed features, structures, and worldgen data |
 | `minecraft-imagegen` | Minecraft-oriented concept art, pack icons, thumbnails, textures, and UI mockups |
 | `minecraft-server-admin` | Server hosting, RCON automation, backups, proxies, JVM/runtime operations, deployment, and troubleshooting |
 | `minecraft-fabric-server-dev` | Fabric server implementation: lifecycle/threading, networking, state/config, commands/permissions, performance, Mixin/Polymer, and source analysis |
 | `fabric-server-validation` | Fabric GameTest, runtime validation, protocol/client compatibility, and E2E evidence |
-| `minecraft-java-content-engineering` | Minecraft Java datapack and resource-pack content engineering |
-| `minecraft-java-reference-hub` | Cross-domain, read-only Minecraft Java 1.21.8 reference synthesis when no narrower specialist owns the whole question |
+| `minecraft-java-content-engineering` | Minecraft Java datapacks, resource packs, and worldgen data/schema/registry-graph engineering |
 | `minecraft-java-world-nbt` | Safe inspection, diffing, and targeted edits for Java world NBT and Anvil region files |
 
 ## Intentionally removed
@@ -41,6 +39,8 @@ The following upstream skills were removed because they overlap with a separate 
 | `minecraft-plugin-dev` | Paper/Bukkit/Spigot plugin development is out of scope |
 | `minecraft-essentials-ops` | EssentialsX operations are out of scope |
 | `minecraft-worldedit-ops` | WorldEdit plugin operations are out of scope |
+| `minecraft-world-generation` | Absorbed into `minecraft-java-content-engineering`; loader-specific Java worldgen integration stays in `minecraft-fabric-server-dev` |
+| `minecraft-java-reference-hub` | Removed as a meta-router; narrow specialist skills now own their domains directly |
 
 The Fabric specialist skills included in this bundle provide the following implementation and validation routes:
 
@@ -81,13 +81,11 @@ For a Fabric server-side project, use the narrowest skill that matches the task.
 | --- | --- |
 | Fabric Java code, lifecycle/threading, networking, persistence/config, commands/permissions, performance, Mixin/Polymer | `minecraft-fabric-server-dev` |
 | Fabric GameTest, runtime validation, E2E, client compatibility checks | `fabric-server-validation` |
-| Complete datapacks/resource packs, registries, recipes, loot, models, and pack assets | `minecraft-java-content-engineering` |
+| Datapacks/resource packs, worldgen JSON/schema/registry graphs, recipes, loot, models, and pack assets | `minecraft-java-content-engineering` |
 | Vanilla command syntax, selectors, scoreboards, mcfunction logic | `minecraft-commands-scripting` |
-| Worldgen JSON/data semantics, registry graphs, biomes, dimensions, features, structures | `minecraft-world-generation` |
 | GitHub Actions and release automation | `minecraft-ci-release` |
 | RCON automation, hosting, deployment, backup, proxy, JVM/runtime operations | `minecraft-server-admin` |
 | Offline `.dat` / `.mca` inspection, diffing, and targeted world-data edits | `minecraft-java-world-nbt` |
-| Cross-domain read-only Java Edition reference synthesis | `minecraft-java-reference-hub` |
 | Visual concepts and raster assets | `minecraft-imagegen` |
 
 Version-sensitive APIs should always be checked against the exact target Minecraft/Fabric version rather than copied from an older 1.20.x or early 1.21.x example.

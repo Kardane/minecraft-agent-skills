@@ -9,7 +9,7 @@ description: "Minecraft Java Edition 1.21.8 Fabric 서버사이드 Java 코드�
 
 - `Use when`: designing, implementing, debugging, or locally building Fabric server-side Java code, Fabric API integrations, Mixin, Polymer, mappings, or Minecraft internals.
 - `Primary capabilities`: `fabric-java-implementation`, `fabric-internals-mapping`, `fabric-local-build`
-- `Do not use when`: behavior validation is the primary task (`fabric-server-validation`), the task is CI/tag/publishing/release automation (`minecraft-ci-release`), the task is worldgen data/schema work without Java integration (`minecraft-world-generation`), the work is client-rendering-only, or the project uses a non-Fabric loader.
+- `Do not use when`: behavior validation is the primary task (`fabric-server-validation`), the task is CI/tag/publishing/release automation (`minecraft-ci-release`), the task is worldgen data/schema work without Java integration (`minecraft-java-content-engineering`), the work is client-rendering-only, or the project uses a non-Fabric loader.
 
 이 스킬은 "돌아가기만 하는 모드"가 아니라, 운영 서버에서 장애 없이 굴러가는 서버사이드 Fabric 모드를 만드는 실무용 표준이다.
 
@@ -147,9 +147,8 @@ description: "Minecraft Java Edition 1.21.8 Fabric 서버사이드 Java 코드�
 | 변경 사항의 행동/런타임 검증 | `fabric-server-validation` |
 | `.dat`/`.mca` 오프라인 월드 데이터 검사/수정 | `minecraft-java-world-nbt` |
 | 데이터팩/리소스팩 제작 | `minecraft-java-content-engineering` |
-| worldgen JSON/registry graph/schema 설계 | `minecraft-world-generation` |
+| worldgen JSON/registry graph/schema 설계 | `minecraft-java-content-engineering` |
 | CI/tag/release/publishing 자동화 | `minecraft-ci-release` |
-| 여러 도메인을 가로지르는 읽기 전용 Java Edition 레퍼런스 질의 | `minecraft-java-reference-hub` |
 
 일반적인 수정 루프:
 
