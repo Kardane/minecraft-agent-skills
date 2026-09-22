@@ -232,8 +232,8 @@ scoreboard players set #config.difficulty points 2
 
 ## NBT Path Syntax
 
-These item/effect paths target 1.21.x and later; the `CustomName` compound form
-targets 1.21.5+. Entity writes require a non-player target. Use `/item`, `/effect`,
+These item/effect and NBT path examples are scoped to Minecraft Java 1.21.8.
+Entity writes require a non-player target. Use `/item`, `/effect`,
 or the appropriate command for player state instead of editing player NBT.
 
 ```mcfunction

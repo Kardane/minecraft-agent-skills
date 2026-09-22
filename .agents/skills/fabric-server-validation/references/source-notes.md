@@ -11,7 +11,7 @@ https://developers.openai.com/codex/build-skills
 
 ## Fabric automated testing
 
-Current Fabric documentation (26.2 at check time) distinguishes unit testing/Fabric Loader JUnit from server and client GameTests. It documents `fabricApi.configureTests`, separate gametest source sets, `runClientGameTest`, and a CI example that runs Client GameTest through a Loom production client task.
+Fabric documentation distinguishes unit testing/Fabric Loader JUnit from server and client GameTests. Treat current documentation as conceptual guidance only: for this bundle, verify every task, DSL option, class, and package against the project's exact Minecraft 1.21.8-compatible Fabric API/Loom versions before use.
 
 Source:
 https://docs.fabricmc.net/develop/automatic-testing
@@ -37,20 +37,19 @@ https://docs.fabricmc.net/develop/automatic-testing
 
 ## Fabric Client GameTest status and dedicated server
 
-Current Fabric API Javadocs for 0.154.2+26.2 mark `net.fabricmc.fabric.api.client.gametest.v1` as `@Experimental`. They document:
+Client GameTest APIs are version-sensitive and may be experimental or absent in the exact Fabric API used by a Minecraft 1.21.8 project. Do not import package names, task names, or dedicated-server test helpers from a newer documentation line by assumption.
 
-- a `TestWorldBuilder` capable of creating a dedicated server;
-- `TestDedicatedServerContext` as an **in-process dedicated server** context;
-- `connect()` for connecting the test client;
-- server-context helpers for running/computing on the server thread;
-- deterministic tick/network synchronization behavior, including packet handling before the next tick after `waitTick()`;
-- the possibility that low-level Netty hooks require disabling the network synchronizer.
+For a 1.21.8 project:
+
+- inspect the project's pinned Fabric API and Loom versions first;
+- use those exact dependency Javadocs/task listings as the API contract;
+- prefer server GameTest when it proves the server-side behavior;
+- use a production-run or split-process route only when the tested boundary requires it;
+- keep an unmodified-vanilla compatibility requirement separate from instrumented Fabric client evidence.
 
 Sources:
-https://maven.fabricmc.net/docs/fabric-api-0.154.2%2B26.2/net/fabricmc/fabric/api/client/gametest/v1/package-summary.html
-https://maven.fabricmc.net/docs/fabric-api-0.154.2%2B26.2/net/fabricmc/fabric/api/client/gametest/v1/world/TestWorldBuilder.html
-https://maven.fabricmc.net/docs/fabric-api-0.154.2%2B26.2/net/fabricmc/fabric/api/client/gametest/v1/context/TestDedicatedServerContext.html
-https://maven.fabricmc.net/docs/fabric-api-0.154.2%2B26.2/net/fabricmc/fabric/api/client/gametest/v1/context/TestServerContext.html
+https://docs.fabricmc.net/develop/automatic-testing
+https://docs.fabricmc.net/develop/loom/production-run-tasks
 
 ## Client-fidelity terminology used by this skill
 
