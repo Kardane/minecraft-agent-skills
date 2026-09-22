@@ -1,6 +1,6 @@
 # minecraft-agent-skills
 
-This repository contains 5 Minecraft skills and a plugin for Codex and Claude Code.
+This repository contains a focused Minecraft skill bundle and a plugin for Codex and Claude Code.
 
 ## Editing
 
@@ -19,11 +19,10 @@ This repository contains 5 Minecraft skills and a plugin for Codex and Claude Co
 - Verify changing APIs against primary documentation for the exact version.
   Distinguish static helper checks from compilation and in-game validation.
 
-- Target current stable Minecraft 26.x and Java 25 for new work. Preserve
-  support for Minecraft 1.21.x on Java 21.
+- Target Minecraft Java Edition 1.21.8 with Java 21. Do not introduce guidance for other Minecraft or Java lines unless the repository baseline is intentionally changed.
 - Keep platform-specific patterns clear and examples runnable.
 - Keep JSON valid and formatted with 2-space indentation.
-- Do not create cross-skill dependencies.
+- Do not create filesystem or runtime dependencies between skills. Routing and handoff references between skills are allowed.
 
 ## Repository boundaries
 

@@ -322,4 +322,53 @@ expect_fail_contains "worldgen legacy path" "legacy path detected" \
   ./.agents/skills/minecraft-world-generation/scripts/validate-worldgen-json.sh \
   --root tests/fixtures/validators/worldgen/legacy
 
+fabric_scaffold_root="$(mktemp -d)"
+trap 'rm -rf "$fabric_scaffold_root"' EXIT
+
+expect_pass "fabric minimal scaffold" \
+  ./.agents/skills/minecraft-fabric-server-dev/scripts/new-fabric-server-mod.sh \
+  --project-name minimal \
+  --package-base com.example.minimal \
+  --output-dir "$fabric_scaffold_root" \
+  --loader-version 0.16.test \
+  --fabric-api-version 0.test+1.21.8
+
+if grep -Fq "polymer-core" "$fabric_scaffold_root/minimal/build.gradle"; then
+  echo "$FAIL fabric minimal scaffold unexpectedly includes Polymer" >&2
+  exit 1
+fi
+if [[ -e "$fabric_scaffold_root/minimal/src/main/resources/minimal.mixins.json" ]]; then
+  echo "$FAIL fabric minimal scaffold unexpectedly includes Mixin config" >&2
+  exit 1
+fi
+if [[ -e "$fabric_scaffold_root/minimal/gradlew" ]]; then
+  echo "$FAIL fabric scaffold unexpectedly generated a partial Gradle wrapper" >&2
+  exit 1
+fi
+
+expect_pass "fabric minimal verifier" \
+  ./.agents/skills/minecraft-fabric-server-dev/scripts/verify-mod-env.sh \
+  --project-dir "$fabric_scaffold_root/minimal"
+
+expect_pass "fabric opt-in scaffold" \
+  ./.agents/skills/minecraft-fabric-server-dev/scripts/new-fabric-server-mod.sh \
+  --project-name optin \
+  --package-base com.example.optin \
+  --output-dir "$fabric_scaffold_root" \
+  --loader-version 0.16.test \
+  --fabric-api-version 0.test+1.21.8 \
+  --with-mixin \
+  --with-polymer \
+  --polymer-version 0.test+1.21.8
+
+grep -Fq "polymer-core" "$fabric_scaffold_root/optin/build.gradle"
+grep -Fq "optin.mixins.json" "$fabric_scaffold_root/optin/src/main/resources/fabric.mod.json"
+
+expect_pass "fabric opt-in verifier" \
+  ./.agents/skills/minecraft-fabric-server-dev/scripts/verify-mod-env.sh \
+  --project-dir "$fabric_scaffold_root/optin"
+
+rm -rf "$fabric_scaffold_root"
+trap - EXIT
+
 echo "$PASS all validator fixture checks completed"

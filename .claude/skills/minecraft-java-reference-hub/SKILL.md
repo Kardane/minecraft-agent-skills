@@ -1,39 +1,46 @@
 ---
 name: minecraft-java-reference-hub
-description: "Use Minecraft Java reference workflows for commands, NBT, item components, datapacks, resources, entities, and multiplayer operations. Use for version-sensitive questions; route Fabric code, mappings, Mixin targets, and runtime validation to specialist implementation and validation skills."
+description: "Answer read-only Minecraft Java 1.21.8 reference questions that genuinely span multiple domains or do not have a narrower specialist owner. Command-only, worldgen-only, pack-authoring, server-ops, Fabric-code, validation, offline-world-data, and image tasks route to their specialist skills."
 ---
 
 # Minecraft Java Reference Hub
 
 ## Routing Boundaries
 
-- `Use when`: answering version-sensitive Minecraft Java domain, command, NBT, item-component, datapack, resource-pack, or multiplayer reference questions.
-- `Do not use when`: modifying Fabric code, resolving mappings or Mixin targets, or running behavior validation.
+- `Use when`: answering a read-only Minecraft Java 1.21.8 reference question that spans multiple domains, or synthesizing relationships between domains when no narrower specialist owns the whole question.
+- `Primary capabilities`: `cross-domain-reference`
+- `Do not use when`: the question is command-only (`minecraft-commands-scripting`), worldgen-only (`minecraft-world-generation`), complete datapack/resource-pack authoring (`minecraft-java-content-engineering`), Fabric code/internals (`minecraft-fabric-server-dev`), Fabric behavior validation, live server operations, offline world NBT editing, or raster image generation.
 
 이 스킬은 정보 나열 도구가 아니다. 버전-도메인-운영 리스크를 고정해서 바로 실행 가능한 답으로 내보내는 품질 게이트다.
 
 ## 언제 쓰는가
 
-아래 중 하나라도 해당되면 이 스킬을 우선 적용한다.
+이 스킬은 **fallback reference synthesizer**다. 다음 경우에만 primary로 선택한다.
 
-1. 버전별 차이 때문에 답변 리스크가 있는 질문
-2. 명령어/데이터팩/NBT/item component가 섞인 복합 질문
-3. 멀티플레이어 서버 운영/성능/권한 이슈 질문
-4. 단순 설명이 아니라 즉시 적용 가능한 절차가 필요한 질문
+1. 1.21.8의 여러 도메인(예: item component + advancement + resource-pack 표현)을 함께 설명해야 하지만 실제 파일/코드 구현은 요청되지 않은 경우.
+2. 단일 specialist의 경계를 넘어서는 읽기 전용 개념/호환성 설명이 필요한 경우.
+
+질문이 한 도메인으로 좁혀지면 commands, worldgen, content, server-admin, world-nbt 등 더 좁은 specialist를 먼저 사용한다.
 
 ## Fabric 개발 작업과의 경계
 
 이 스킬은 **Minecraft 도메인/버전 레퍼런스 허브**다. Fabric 저장소를 실제로 수정하거나 Minecraft 내부 구현을 추적하는 작업에서는 다음으로 넘긴다.
 
-- 저장소 구현/리팩터링/배포: `minecraft-fabric-server-dev`
-- 1.21.8 내부 클래스, 메서드, mapping, caller/callee, Mixin target: `minecraft-fabric-server-dev`의 mcdev-mcp 분석 절차
+- Fabric 저장소 구현/리팩터링/로컬 빌드: `minecraft-fabric-server-dev`
+- 1.21.8 내부 클래스, 메서드, mapping, caller/callee, Mixin target: `minecraft-fabric-server-dev`
 - 동작/회귀 검증 경로 선택: `fabric-server-validation`
+- 명령 문법/selector/scoreboard: `minecraft-commands-scripting`
+- worldgen data/schema/registry graph: `minecraft-world-generation`
+- 완성형 datapack/resource-pack 제작: `minecraft-java-content-engineering`
+- RCON/백업/배포/운영: `minecraft-server-admin`
+- CI/tag/publishing: `minecraft-ci-release`
+- offline `.dat`/`.mca`: `minecraft-java-world-nbt`
 
-즉 “명령/NBT/component 문법이 무엇인가?”는 이 스킬이 잘 맞고, “이 1.21.8 메서드에 어떤 Mixin을 걸고 어떻게 자동 검증할까?”는 Fabric 개발 스킬 체인으로 넘긴다.
+즉 단일 도메인 질문은 해당 specialist가 primary이고, 이 허브는 여러 도메인을 가로지르는 읽기 전용 synthesis에만 primary가 된다.
 
 ## 입력 잠금 규칙 (필수)
 
-1. 기준 버전부터 확정한다 (`1.21.8` 또는 `1.21.11`).
+1. 기준 버전은 `1.21.8`로 고정한다. 다른 버전 문법을 혼합하지 않는다.
 2. 질문을 2개 이하 도메인으로 분해한다.
 3. 운영 영향이 있으면 위험도(낮음/중간/높음)를 먼저 적는다.
 4. 모호하면 추측하지 말고 검증 절차를 같이 준다.
@@ -42,9 +49,8 @@ description: "Use Minecraft Java reference workflows for commands, NBT, item com
 
 ### 1) 버전 잠금
 
-- `1.21.8`: [references/minecraft-je-1.21.8.md](references/minecraft-je-1.21.8.md)
-- `1.21.11`: [references/minecraft-je-1.21.11.md](references/minecraft-je-1.21.11.md)
-- 버전 비교 요청 시에만: [references/version-diff-1.21.8-vs-1.21.11.md](references/version-diff-1.21.8-vs-1.21.11.md)
+- 기준은 `1.21.8`: [references/minecraft-je-1.21.8.md](references/minecraft-je-1.21.8.md)
+- 다른 Minecraft 버전의 예시나 문법은 이 번들의 기준 답변에 혼합하지 않는다.
 
 ### 2) 도메인 분해
 
@@ -57,7 +63,7 @@ description: "Use Minecraft Java reference workflows for commands, NBT, item com
 
 ### 3) 운영 출력 계약
 
-출력 모드는 4개로 고정한다.
+출력 모드는 3개로 고정한다.
 
 1. 빠른 답변 모드
 - 기준 버전
@@ -76,12 +82,6 @@ description: "Use Minecraft Java reference workflows for commands, NBT, item com
 - 원인 가설(우선순위)
 - 진단 순서
 - 즉시 완화 + 근본 개선 + 롤백
-
-1. 버전 비교 모드
-- 공통 기반
-- 차이 후보
-- 깨지기 쉬운 지점
-- 마이그레이션 순서
 
 운영/장애 플레이북은 [references/multiplayer-ops-troubleshooting.md](references/multiplayer-ops-troubleshooting.md) 사용.
 
@@ -106,7 +106,7 @@ description: "Use Minecraft Java reference workflows for commands, NBT, item com
 질문 텍스트를 `모드 + 도메인 태그`로 1차 분류한다.
 
 ```bash
-./scripts/classify-mc-query.sh --query "1.21.11 서버에서 스코어보드랑 advancement 연동해줘"
+./scripts/classify-mc-query.sh --query "1.21.8 서버에서 스코어보드랑 advancement 연동해줘"
 ```
 
 ### `scripts/validate-reference-answer.sh`

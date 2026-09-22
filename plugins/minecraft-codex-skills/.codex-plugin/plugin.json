@@ -1,6 +1,6 @@
 {
   "name": "minecraft-codex-skills",
   "version": "2.5.3",
-  "description": "5 Minecraft development and operations skills for Codex and Claude Code.",
+  "description": "Minecraft development and operations skills for Codex and Claude Code.",
   "skills": "./skills/"
 }

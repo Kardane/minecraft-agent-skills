@@ -1,26 +1,24 @@
 ---
 name: minecraft-world-generation
-description: "Create and debug Minecraft 26.x and legacy 1.21.x world generation for datapacks, NeoForge, or Fabric, including biomes, dimensions, features, structures, and biome modifiers. Use for worldgen data or registration, not general gameplay systems."
+description: "Design and debug Minecraft Java 1.21.8 worldgen data semantics and registry graphs for biomes, dimensions, configured/placed features, structures, and related datapack data. For Fabric Java registration/datagen implementation, use minecraft-fabric-server-dev with this skill only as domain reference."
 ---
 
 # Minecraft World Generation
 
-Use this skill for biome, dimension, feature, or structure data and their
-registration. Use `minecraft-java-content-engineering` for non-worldgen data and
-`minecraft-fabric-server-dev` for non-worldgen gameplay code.
+Use this skill for biome, dimension, feature, and structure **data semantics, schemas, and registry graphs**. Use `minecraft-java-content-engineering` for non-worldgen pack content. Loader-specific Java registration, Fabric datagen wiring, callbacks, and API code are owned by `minecraft-fabric-server-dev`; this skill may support those tasks with worldgen domain knowledge.
 
 ## Routing Boundaries
 
-- `Use when`: the task changes worldgen data, registration, or injection.
-- `Do not use when`: the task is non-worldgen datapack work (`minecraft-java-content-engineering`).
-- `Do not use when`: the task is non-worldgen Fabric mod systems (`minecraft-fabric-server-dev`).
+- `Use when`: the task changes worldgen JSON/data semantics, registry references, biome/dimension/feature/structure schemas, or datapack worldgen composition.
+- `Primary capabilities`: `worldgen-data-semantics`
+- `Do not use when`: the primary deliverable is Fabric Java registration/datagen/API code (`minecraft-fabric-server-dev`) or non-worldgen datapack/resource-pack work (`minecraft-java-content-engineering`).
 
 ## Choose the delivery path
 
 | Approach | Best When | Platform |
 |----------|-----------|----------|
 | Datapack JSON | Change data supplied by a pack | Vanilla, any server |
-| **Mod + Datagen** | Registering new biomes/dimensions, code-driven | NeoForge / Fabric |
+| **Mod + Datagen data model** | Designing generated worldgen data/registry graph; Java wiring is handed to the loader implementation skill | NeoForge / Fabric |
 | **Biome Modifier (NeoForge)** | Adding features/spawns to existing biomes | NeoForge |
 | **BiomeModification API (Fabric)** | Adding features/spawns to existing biomes | Fabric |
 
@@ -31,22 +29,9 @@ mod-specific registry path.
 
 ## Version boundary
 
-Use Minecraft 26.x for new work. Use Java 25 and start
-each JSON schema from the exact target's vanilla data or generated output. Do
-not copy a 1.21 shape into a 26.x pack merely because it parses as JSON.
+Target Minecraft Java Edition **1.21.8** with Java **21**. Start each JSON schema from 1.21.8 vanilla data or version-matched datagen output; do not copy shapes from later releases merely because they parse as JSON.
 
-Preserve an established 1.21.x project on Java 21 and its matching schema unless
-the task explicitly includes an upgrade. Keep examples matched to the project version.
-
-The [26.1 migration primer](https://docs.neoforged.net/primer/docs/26.1/)
-removes `minecraft:random_patch` and `minecraft:no_bonemeal_flower`. It replaces
-the random-patch pattern with a separate `minecraft:simple_block` configured
-feature and placements for count, random offset, and block-predicate filtering.
-Inspect the relevant primer section before migrating code or data.
-
-Read [legacy 1.21 JSON patterns](references/legacy-1.21-worldgen-json.md) only
-when the project targets that version. Those examples are not
-release artifacts for 26.x.
+Use [the bundled 1.21 worldgen patterns](references/legacy-1.21-worldgen-json.md) as a structural aid, then verify registry paths and fields against the exact 1.21.8 target.
 
 ---
 
@@ -106,61 +91,9 @@ verify the target exists.
 
 ## Biomes and dimensions
 
-For 26.x biome and dimension data, use the exact target's vanilla data or
-datagen output as the schema source. The older `effects` and dimension-type
-fields do not model newer environment behavior. The 11 decoration steps still
-organize placed features; choose the semantically appropriate step and keep ore
-placement in `underground_ores`.
+For Minecraft 1.21.8 biome and dimension data, use the exact target's vanilla data or datagen output as the schema source. The 11 decoration steps organize placed features; choose the semantically appropriate step and keep ore placement in `underground_ores`.
 
-The version-labeled 1.21.5 biome and dimension examples are in
-[legacy 1.21 JSON patterns](references/legacy-1.21-worldgen-json.md).
-
-## 26.x feature pattern
-
-For the 26.1 replacement for a simple random patch, the migration primer shows
-a `simple_block` configured feature and a placed feature with count, random
-offset, and a block-predicate filter. Adapt the exact values and block state to
-the target release's generated data.
-
-At `data/<namespace>/worldgen/configured_feature/my_plant.json`:
-
-```json
-{
-  "type": "minecraft:simple_block",
-  "config": {
-    "to_place": {
-      "type": "minecraft:simple_state_provider",
-      "state": { "Name": "minecraft:sweet_berry_bush", "Properties": { "age": "3" } }
-    }
-  }
-}
-```
-
-At `data/<namespace>/worldgen/placed_feature/my_plant.json`:
-
-```json
-{
-  "feature": "<namespace>:my_plant",
-  "placement": [
-    { "type": "minecraft:count", "count": 96 },
-    {
-      "type": "minecraft:random_offset",
-      "xz_spread": { "type": "minecraft:trapezoid", "min": -7, "max": 7, "plateau": 0 },
-      "y_spread": { "type": "minecraft:trapezoid", "min": -3, "max": 3, "plateau": 0 }
-    },
-    {
-      "type": "minecraft:block_predicate_filter",
-      "predicate": {
-        "type": "minecraft:all_of",
-        "predicates": [
-          { "type": "minecraft:matching_block_tag", "tag": "minecraft:air" },
-          { "type": "minecraft:matching_blocks", "blocks": "minecraft:grass_block", "offset": [0, -1, 0] }
-        ]
-      }
-    }
-  ]
-}
-```
+The bundled [1.21 worldgen patterns](references/legacy-1.21-worldgen-json.md) are a starting point only; confirm any version-labeled example against 1.21.8 before shipping.
 
 ---
 
@@ -186,7 +119,7 @@ the pack load when the dependency is absent.
 
 ## Structures and dimensions
 
-For any current release, derive structure, template-pool, dimension, and
+For Minecraft 1.21.8, derive structure, template-pool, dimension, and
 dimension-type JSON from that release's vanilla data or datagen output. Confirm
 the reference graph before launching a test world:
 
@@ -196,8 +129,7 @@ the reference graph before launching a test world:
 - `dimension.type` references `dimension_type`; a noise generator's string
   `settings` references `worldgen/noise_settings`.
 
-For Fabric registration or mod datagen, use the exact loader and API version's
-documentation rather than copying 1.21 code into a 26.x project.
+For Fabric registration or mod datagen, use the exact 1.21.8-compatible loader and API documentation rather than copying examples from another Minecraft line.
 
 The detailed 1.21 structure and dimension examples are in
 [legacy 1.21 JSON patterns](references/legacy-1.21-worldgen-json.md).

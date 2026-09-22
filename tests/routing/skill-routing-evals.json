@@ -1,0 +1,179 @@
+{
+  "version": 1,
+  "note": "Static routing-contract fixtures. The test validates unique capability ownership, corpus consistency, and coverage; it does not claim to execute a live model router.",
+  "cases": [
+    {
+      "id": "fabric-command-implementation",
+      "prompt": "Fabric 1.21.8에서 /home Brigadier 명령을 Java로 구현해줘",
+      "capability": "fabric-java-implementation",
+      "expected_primary": "minecraft-fabric-server-dev",
+      "allowed_supporting": [
+        "minecraft-commands-scripting"
+      ]
+    },
+    {
+      "id": "fabric-biome-registration",
+      "prompt": "Fabric 1.21.8 모드에서 custom biome를 Java로 등록하고 datagen 연결해줘",
+      "capability": "fabric-java-implementation",
+      "expected_primary": "minecraft-fabric-server-dev",
+      "allowed_supporting": [
+        "minecraft-world-generation"
+      ]
+    },
+    {
+      "id": "mixin-target-analysis",
+      "prompt": "1.21.8 MinecraftServer tick 경로에서 안전한 Mixin target과 caller를 찾아줘",
+      "capability": "fabric-internals-mapping",
+      "expected_primary": "minecraft-fabric-server-dev",
+      "allowed_supporting": []
+    },
+    {
+      "id": "local-production-build",
+      "prompt": "이 Fabric 모드의 remapJar/local production artifact 빌드 오류를 고쳐줘",
+      "capability": "fabric-local-build",
+      "expected_primary": "minecraft-fabric-server-dev",
+      "allowed_supporting": []
+    },
+    {
+      "id": "inventory-sync-validation",
+      "prompt": "Fabric inventory sync 수정이 실제 클라이언트까지 맞는지 GameTest/E2E로 증명해줘",
+      "capability": "fabric-behavior-validation",
+      "expected_primary": "fabric-server-validation",
+      "allowed_supporting": [
+        "minecraft-fabric-server-dev"
+      ]
+    },
+    {
+      "id": "vanilla-compat-gate",
+      "prompt": "이 서버사이드 Fabric 모드가 무개조 바닐라 클라이언트와 호환되는지 검증해줘",
+      "capability": "fabric-behavior-validation",
+      "expected_primary": "fabric-server-validation",
+      "allowed_supporting": []
+    },
+    {
+      "id": "complete-datapack",
+      "prompt": "1.21.8 데이터팩 전체 구조를 만들고 function, advancement, tag까지 묶어줘",
+      "capability": "pack-authoring",
+      "expected_primary": "minecraft-java-content-engineering",
+      "allowed_supporting": [
+        "minecraft-commands-scripting"
+      ]
+    },
+    {
+      "id": "resource-pack-model",
+      "prompt": "1.21.8 리소스팩에 item model, texture, pack.mcmeta를 완성해줘",
+      "capability": "pack-authoring",
+      "expected_primary": "minecraft-java-content-engineering",
+      "allowed_supporting": [
+        "minecraft-imagegen"
+      ]
+    },
+    {
+      "id": "execute-selector",
+      "prompt": "1.21.8 execute as/at와 selector 조건을 조합한 명령만 만들어줘",
+      "capability": "command-semantics",
+      "expected_primary": "minecraft-commands-scripting",
+      "allowed_supporting": []
+    },
+    {
+      "id": "scoreboard-syntax",
+      "prompt": "1.21.8 scoreboard로 60초 타이머 만드는 mcfunction 로직만 작성해줘",
+      "capability": "command-semantics",
+      "expected_primary": "minecraft-commands-scripting",
+      "allowed_supporting": []
+    },
+    {
+      "id": "biome-json",
+      "prompt": "1.21.8 custom biome JSON과 placed feature registry graph를 설계해줘",
+      "capability": "worldgen-data-semantics",
+      "expected_primary": "minecraft-world-generation",
+      "allowed_supporting": []
+    },
+    {
+      "id": "structure-set",
+      "prompt": "1.21.8 structure, structure_set, template_pool 참조 관계를 잡아줘",
+      "capability": "worldgen-data-semantics",
+      "expected_primary": "minecraft-world-generation",
+      "allowed_supporting": []
+    },
+    {
+      "id": "rcon-backup",
+      "prompt": "RCON으로 save-off/save-all을 걸고 안전하게 백업 후 save-on 복구하는 운영 스크립트를 짜줘",
+      "capability": "server-operations",
+      "expected_primary": "minecraft-server-admin",
+      "allowed_supporting": [
+        "minecraft-commands-scripting"
+      ]
+    },
+    {
+      "id": "server-tuning",
+      "prompt": "1.21.8 서버 MSPT가 높다. Spark 기준으로 원인 진단하고 운영 튜닝해줘",
+      "capability": "server-operations",
+      "expected_primary": "minecraft-server-admin",
+      "allowed_supporting": []
+    },
+    {
+      "id": "github-release",
+      "prompt": "태그 push 시 Fabric 1.21.8 remapJar를 GitHub Release와 Modrinth에 publish하는 CI를 만들어줘",
+      "capability": "ci-release-publishing",
+      "expected_primary": "minecraft-ci-release",
+      "allowed_supporting": [
+        "minecraft-fabric-server-dev"
+      ]
+    },
+    {
+      "id": "release-version-policy",
+      "prompt": "mod_version과 1.21.8 artifact version을 검증하는 release workflow를 작성해줘",
+      "capability": "ci-release-publishing",
+      "expected_primary": "minecraft-ci-release",
+      "allowed_supporting": []
+    },
+    {
+      "id": "cross-domain-components",
+      "prompt": "1.21.8에서 item component, advancement, resource-pack item model이 서로 어떻게 연결되는지만 설명해줘",
+      "capability": "cross-domain-reference",
+      "expected_primary": "minecraft-java-reference-hub",
+      "allowed_supporting": [
+        "minecraft-java-content-engineering"
+      ]
+    },
+    {
+      "id": "cross-domain-entity-data",
+      "prompt": "1.21.8 entity NBT, command selector, datapack predicate의 역할 차이를 읽기 전용으로 비교해줘",
+      "capability": "cross-domain-reference",
+      "expected_primary": "minecraft-java-reference-hub",
+      "allowed_supporting": [
+        "minecraft-commands-scripting",
+        "minecraft-java-content-engineering"
+      ]
+    },
+    {
+      "id": "level-dat-edit",
+      "prompt": "서버를 끈 상태에서 level.dat의 특정 NBT 값을 타입 보존해서 수정하고 diff해줘",
+      "capability": "offline-world-nbt",
+      "expected_primary": "minecraft-java-world-nbt",
+      "allowed_supporting": []
+    },
+    {
+      "id": "region-block-edit",
+      "prompt": "오프라인 r.0.0.mca에서 특정 좌표 block state만 안전하게 바꾸고 검증해줘",
+      "capability": "offline-world-nbt",
+      "expected_primary": "minecraft-java-world-nbt",
+      "allowed_supporting": []
+    },
+    {
+      "id": "pack-icon",
+      "prompt": "이 Minecraft 모드용 128x128 pack.png 아이콘을 생성해줘",
+      "capability": "raster-image-generation",
+      "expected_primary": "minecraft-imagegen",
+      "allowed_supporting": []
+    },
+    {
+      "id": "release-banner",
+      "prompt": "Modrinth 릴리스용 Minecraft 배너 이미지를 만들어줘",
+      "capability": "raster-image-generation",
+      "expected_primary": "minecraft-imagegen",
+      "allowed_supporting": []
+    }
+  ]
+}
