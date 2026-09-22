@@ -24,6 +24,7 @@ This fork intentionally removes broad or overlapping skills so an agent is less 
 | `fabric-server-validation` | Fabric GameTest, Carpet fake-player runtime validation, protocol/client compatibility, and E2E evidence |
 | `minecraft-java-content-engineering` | Minecraft Java datapacks, resource packs, and worldgen data/schema/registry-graph engineering |
 | `minecraft-java-world-nbt` | Safe inspection, diffing, and targeted edits for Java world NBT and Anvil region files |
+| `minecraft-worldedit-engineering` | WorldEdit 7.3.16 API integration for Fabric: EditSession, Region, Mask, Pattern, clipboard/history, and safe live-world mutation |
 
 ## Intentionally removed
 
@@ -38,7 +39,7 @@ The following upstream skills were removed because they overlap with a separate 
 | `minecraft-multiloader` | Not needed for a Fabric-only workflow |
 | `minecraft-plugin-dev` | Paper/Bukkit/Spigot plugin development is out of scope |
 | `minecraft-essentials-ops` | EssentialsX operations are out of scope |
-| `minecraft-worldedit-ops` | WorldEdit plugin operations are out of scope |
+| `minecraft-worldedit-ops` | Replaced by the API-first `minecraft-worldedit-engineering` specialist |
 | `minecraft-world-generation` | Absorbed into `minecraft-java-content-engineering`; loader-specific Java worldgen integration stays in `minecraft-fabric-server-dev` |
 | `minecraft-java-reference-hub` | Removed as a meta-router; narrow specialist skills now own their domains directly |
 
@@ -86,6 +87,7 @@ For a Fabric server-side project, use the narrowest skill that matches the task.
 | GitHub Actions and release automation | `minecraft-ci-release` |
 | RCON automation, hosting, deployment, backup, proxy, JVM/runtime operations | `minecraft-server-admin` |
 | Offline `.dat` / `.mca` inspection, diffing, and targeted world-data edits | `minecraft-java-world-nbt` |
+| WorldEdit API integration, Region/Mask/Pattern edits, clipboard/schematic flows, or undo-aware live-world mutation | `minecraft-worldedit-engineering` |
 | Visual concepts and raster assets | `minecraft-imagegen` |
 
 Version-sensitive APIs should always be checked against the exact target Minecraft/Fabric version rather than copied from an older 1.20.x or early 1.21.x example.
