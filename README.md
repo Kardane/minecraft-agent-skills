@@ -4,7 +4,7 @@ A trimmed fork of [Jahrome907/minecraft-agent-skills](https://github.com/Jahrome
 
 The intended baseline is:
 
-- Minecraft Java Edition **1.21.8 or newer**
+- Minecraft Java Edition **1.21.8**
 - **Fabric** as the primary mod loader
 - Server-side mod development where possible
 - Java 21 for the 1.21.x line
