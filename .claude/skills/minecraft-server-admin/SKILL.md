@@ -1,6 +1,6 @@
 ---
 name: minecraft-server-admin
-description: "Set up, operate, tune, and troubleshoot Minecraft Java 26.x and legacy 1.21.x servers across Paper, Purpur, Folia, Velocity, Fabric, and NeoForge. Use for infrastructure, backups, proxies, and live operations, not plugin or mod development."
+description: "Set up, operate, tune, and troubleshoot Minecraft Java 1.21.8 servers, with Fabric as the primary server-mod workflow. Use for infrastructure, backups, proxies, and live operations, not mod implementation."
 ---
 
 # Minecraft Server Administration Skill
@@ -41,14 +41,10 @@ stack and version first and preserve them unless migration is requested.
 - Use Velocity when one process is not enough or you need separate backend roles.
 - Use Fabric/NeoForge when the requirement is mod-driven, not plugin-driven.
 
-### Java versions
+### Java version
 
-- Paper and Purpur: Minecraft 26.1+ requires Java 25; Minecraft 1.21.x uses
-  Java 21. Verify the exact Paper/Purpur build and installed plugins before a
-  version change.
-- Current Velocity 4.x requires Java 25. For a legacy proxy, retain the Java
-  version required by that exact proxy release rather than applying the current
-  version by default.
+- The repository baseline is Minecraft Java 1.21.8 on Java 21.
+- Keep a separately managed proxy or non-Fabric component on the runtime required by that exact component; do not upgrade the Minecraft or Java line as a side effect of an operations task.
 
 ---
 
@@ -120,7 +116,7 @@ Do not tune everything at once. Apply one group at a time.
 
 ### Step 4: Use stable startup flags
 
-For Java 25 on current Paper/Purpur, start with a simple measured baseline:
+For Minecraft 1.21.8 on Java 21, start with a simple measured baseline:
 
 ```bash
 java -Xms4G -Xmx4G -jar server.jar --nogui
@@ -412,12 +408,12 @@ Adjust these only after profiling identifies an actionable bottleneck.
 ```yaml
 services:
   paper:
-    image: itzg/minecraft-server:java25
+    image: itzg/minecraft-server:java21
     container_name: mc-paper
     environment:
       EULA: "TRUE"
       TYPE: "PAPER"
-      VERSION: "26.2"
+      VERSION: "1.21.8"
       MEMORY: "10G"
     ports:
       - "25565:25565"
@@ -426,9 +422,7 @@ services:
     restart: unless-stopped
 ```
 
-This Docker example targets current Paper 26.2 and Java 25. Re-check plugin
-compatibility and take a restorable backup before changing an existing server's
-Minecraft or Java line.
+This Docker example targets Minecraft 1.21.8 on Java 21. Re-check plugin compatibility and take a restorable backup before changing an existing server's deployment.
 
 ### Pterodactyl/Wings notes
 
