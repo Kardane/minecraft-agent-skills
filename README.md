@@ -21,6 +21,11 @@ This fork intentionally removes broad or overlapping skills so an agent is less 
 | `minecraft-world-generation` | Biomes, dimensions, configured/placed features, structures, and worldgen data |
 | `minecraft-imagegen` | Minecraft-oriented concept art, pack icons, thumbnails, textures, and UI mockups |
 | `minecraft-server-admin` | Server hosting, JVM/runtime operations, backups, proxies, deployment, and troubleshooting |
+| `minecraft-fabric-server-dev` | Fabric server-side mod implementation, Fabric API, Mixin, Polymer, and source analysis |
+| `fabric-server-validation` | Fabric GameTest, runtime validation, protocol/client compatibility, and E2E evidence |
+| `minecraft-java-content-engineering` | Minecraft Java datapack and resource-pack content engineering |
+| `minecraft-java-reference-hub` | Version-pinned Minecraft Java domain and command/NBT reference workflows |
+| `minecraft-java-world-nbt` | Safe inspection, diffing, and targeted edits for Java world NBT and Anvil region files |
 
 ## Intentionally removed
 
@@ -37,7 +42,7 @@ The following upstream skills were removed because they overlap with a separate 
 | `minecraft-essentials-ops` | EssentialsX operations are out of scope |
 | `minecraft-worldedit-ops` | WorldEdit plugin operations are out of scope |
 
-The retained skills route Fabric implementation work toward these companion specialist skills when they are available:
+The Fabric specialist skills included in this bundle provide the following implementation and validation routes:
 
 - `minecraft-fabric-server-dev`
 - `fabric-server-validation`
