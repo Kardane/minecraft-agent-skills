@@ -17,7 +17,7 @@
       "capability": "fabric-java-implementation",
       "expected_primary": "minecraft-fabric-server-dev",
       "allowed_supporting": [
-        "minecraft-world-generation"
+        "minecraft-java-content-engineering"
       ]
     },
     {
@@ -86,14 +86,14 @@
       "id": "biome-json",
       "prompt": "1.21.8 custom biome JSON과 placed feature registry graph를 설계해줘",
       "capability": "worldgen-data-semantics",
-      "expected_primary": "minecraft-world-generation",
+      "expected_primary": "minecraft-java-content-engineering",
       "allowed_supporting": []
     },
     {
       "id": "structure-set",
       "prompt": "1.21.8 structure, structure_set, template_pool 참조 관계를 잡아줘",
       "capability": "worldgen-data-semantics",
-      "expected_primary": "minecraft-world-generation",
+      "expected_primary": "minecraft-java-content-engineering",
       "allowed_supporting": []
     },
     {
@@ -131,19 +131,16 @@
     {
       "id": "cross-domain-components",
       "prompt": "1.21.8에서 item component, advancement, resource-pack item model이 서로 어떻게 연결되는지만 설명해줘",
-      "capability": "cross-domain-reference",
-      "expected_primary": "minecraft-java-reference-hub",
-      "allowed_supporting": [
-        "minecraft-java-content-engineering"
-      ]
+      "capability": "pack-authoring",
+      "expected_primary": "minecraft-java-content-engineering",
+      "allowed_supporting": []
     },
     {
       "id": "cross-domain-entity-data",
       "prompt": "1.21.8 entity NBT, command selector, datapack predicate의 역할 차이를 읽기 전용으로 비교해줘",
-      "capability": "cross-domain-reference",
-      "expected_primary": "minecraft-java-reference-hub",
+      "capability": "command-semantics",
+      "expected_primary": "minecraft-commands-scripting",
       "allowed_supporting": [
-        "minecraft-commands-scripting",
         "minecraft-java-content-engineering"
       ]
     },

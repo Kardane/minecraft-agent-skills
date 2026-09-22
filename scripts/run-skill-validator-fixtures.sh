@@ -249,77 +249,77 @@ expect_path "tests/fixtures/validators/worldgen/invalid-tags"
 expect_path "tests/fixtures/validators/worldgen/tags-only"
 expect_path "tests/fixtures/validators/worldgen/invalid-jigsaw-refs"
 expect_pass "worldgen valid" \
-  ./.agents/skills/minecraft-world-generation/scripts/validate-worldgen-json.sh \
+  ./.agents/skills/minecraft-java-content-engineering/scripts/datapack/worldgen/validate-worldgen-json.sh \
   --root tests/fixtures/validators/worldgen/valid
 expect_pass "worldgen external references strict" \
-  ./.agents/skills/minecraft-world-generation/scripts/validate-worldgen-json.sh \
+  ./.agents/skills/minecraft-java-content-engineering/scripts/datapack/worldgen/validate-worldgen-json.sh \
   --root tests/fixtures/validators/worldgen/external-worldgen-refs --strict
 expect_fail_contains "worldgen missing supplied namespace reference" "placed_feature references missing configured_feature: minecraft:missing_configured" \
-  ./.agents/skills/minecraft-world-generation/scripts/validate-worldgen-json.sh \
+  ./.agents/skills/minecraft-java-content-engineering/scripts/datapack/worldgen/validate-worldgen-json.sh \
   --root tests/fixtures/validators/worldgen/invalid-external-local-worldgen-refs
 expect_fail_contains "worldgen invalid" "placed_feature references missing configured_feature" \
-  ./.agents/skills/minecraft-world-generation/scripts/validate-worldgen-json.sh \
+  ./.agents/skills/minecraft-java-content-engineering/scripts/datapack/worldgen/validate-worldgen-json.sh \
   --root tests/fixtures/validators/worldgen/invalid
 expect_pass "worldgen dimensions only" \
-  ./.agents/skills/minecraft-world-generation/scripts/validate-worldgen-json.sh \
+  ./.agents/skills/minecraft-java-content-engineering/scripts/datapack/worldgen/validate-worldgen-json.sh \
   --root tests/fixtures/validators/worldgen/dimensions-only
 expect_pass "worldgen dimensions only strict" \
-  ./.agents/skills/minecraft-world-generation/scripts/validate-worldgen-json.sh \
+  ./.agents/skills/minecraft-java-content-engineering/scripts/datapack/worldgen/validate-worldgen-json.sh \
   --root tests/fixtures/validators/worldgen/dimensions-only \
   --strict
 expect_pass "worldgen external dimension settings strict" \
-  ./.agents/skills/minecraft-world-generation/scripts/validate-worldgen-json.sh \
+  ./.agents/skills/minecraft-java-content-engineering/scripts/datapack/worldgen/validate-worldgen-json.sh \
   --root tests/fixtures/validators/worldgen/external-dimension-settings \
   --strict
 expect_pass "worldgen external dimension refs with tags strict" \
-  ./.agents/skills/minecraft-world-generation/scripts/validate-worldgen-json.sh \
+  ./.agents/skills/minecraft-java-content-engineering/scripts/datapack/worldgen/validate-worldgen-json.sh \
   --root tests/fixtures/validators/worldgen/external-dimension-refs-with-tags \
   --strict
 expect_fail_contains "worldgen invalid dimension refs type" "dimension references missing dimension_type" \
-  ./.agents/skills/minecraft-world-generation/scripts/validate-worldgen-json.sh \
+  ./.agents/skills/minecraft-java-content-engineering/scripts/datapack/worldgen/validate-worldgen-json.sh \
   --root tests/fixtures/validators/worldgen/invalid-dimension-refs
 expect_fail_contains "worldgen invalid dimension refs noise" "dimension references missing noise_settings" \
-  ./.agents/skills/minecraft-world-generation/scripts/validate-worldgen-json.sh \
+  ./.agents/skills/minecraft-java-content-engineering/scripts/datapack/worldgen/validate-worldgen-json.sh \
   --root tests/fixtures/validators/worldgen/invalid-dimension-refs
 expect_fail_contains "worldgen invalid external local dimension refs type" "dimension references missing dimension_type: minecraft:custom_missing" \
-  ./.agents/skills/minecraft-world-generation/scripts/validate-worldgen-json.sh \
+  ./.agents/skills/minecraft-java-content-engineering/scripts/datapack/worldgen/validate-worldgen-json.sh \
   --root tests/fixtures/validators/worldgen/invalid-external-local-dimension-refs
 expect_fail_contains "worldgen invalid external local dimension refs noise" "dimension references missing noise_settings: minecraft:custom_missing_noise" \
-  ./.agents/skills/minecraft-world-generation/scripts/validate-worldgen-json.sh \
+  ./.agents/skills/minecraft-java-content-engineering/scripts/datapack/worldgen/validate-worldgen-json.sh \
   --root tests/fixtures/validators/worldgen/invalid-external-local-dimension-refs
 expect_fail_contains "worldgen invalid dimension json summary" "worldgen validation failed" \
-  ./.agents/skills/minecraft-world-generation/scripts/validate-worldgen-json.sh \
+  ./.agents/skills/minecraft-java-content-engineering/scripts/datapack/worldgen/validate-worldgen-json.sh \
   --root tests/fixtures/validators/worldgen/invalid-dimension-json
 expect_pass "worldgen nested paths" \
-  ./.agents/skills/minecraft-world-generation/scripts/validate-worldgen-json.sh \
+  ./.agents/skills/minecraft-java-content-engineering/scripts/datapack/worldgen/validate-worldgen-json.sh \
   --root tests/fixtures/validators/worldgen/nested-paths
 expect_fail_contains "worldgen invalid jigsaw start_pool" "jigsaw structure references missing template_pool" \
-  ./.agents/skills/minecraft-world-generation/scripts/validate-worldgen-json.sh \
+  ./.agents/skills/minecraft-java-content-engineering/scripts/datapack/worldgen/validate-worldgen-json.sh \
   --root tests/fixtures/validators/worldgen/invalid-jigsaw-refs
 expect_fail_contains "worldgen invalid jigsaw structure template" "template_pool element references missing structure template" \
-  ./.agents/skills/minecraft-world-generation/scripts/validate-worldgen-json.sh \
+  ./.agents/skills/minecraft-java-content-engineering/scripts/datapack/worldgen/validate-worldgen-json.sh \
   --root tests/fixtures/validators/worldgen/invalid-jigsaw-refs
 expect_fail_contains "worldgen invalid jigsaw processors" "template_pool element references missing processor_list" \
-  ./.agents/skills/minecraft-world-generation/scripts/validate-worldgen-json.sh \
+  ./.agents/skills/minecraft-java-content-engineering/scripts/datapack/worldgen/validate-worldgen-json.sh \
   --root tests/fixtures/validators/worldgen/invalid-jigsaw-refs
 expect_fail_contains "worldgen invalid tags" "invalid JSON" \
-  ./.agents/skills/minecraft-world-generation/scripts/validate-worldgen-json.sh \
+  ./.agents/skills/minecraft-java-content-engineering/scripts/datapack/worldgen/validate-worldgen-json.sh \
   --root tests/fixtures/validators/worldgen/invalid-tags
 expect_fail_contains "worldgen invalid tag layout" "invalid worldgen tag path" \
-  ./.agents/skills/minecraft-world-generation/scripts/validate-worldgen-json.sh \
+  ./.agents/skills/minecraft-java-content-engineering/scripts/datapack/worldgen/validate-worldgen-json.sh \
   --root tests/fixtures/validators/worldgen/invalid-tag-layout
 expect_fail_contains "worldgen empty" "no supported worldgen JSON files found" \
-  ./.agents/skills/minecraft-world-generation/scripts/validate-worldgen-json.sh \
+  ./.agents/skills/minecraft-java-content-engineering/scripts/datapack/worldgen/validate-worldgen-json.sh \
   --root tests/fixtures/validators/worldgen/empty
 expect_pass "worldgen tags only" \
-  ./.agents/skills/minecraft-world-generation/scripts/validate-worldgen-json.sh \
+  ./.agents/skills/minecraft-java-content-engineering/scripts/datapack/worldgen/validate-worldgen-json.sh \
   --root tests/fixtures/validators/worldgen/tags-only
 expect_pass "worldgen tags only strict" \
-  ./.agents/skills/minecraft-world-generation/scripts/validate-worldgen-json.sh \
+  ./.agents/skills/minecraft-java-content-engineering/scripts/datapack/worldgen/validate-worldgen-json.sh \
   --root tests/fixtures/validators/worldgen/tags-only \
   --strict
 expect_fail_contains "worldgen legacy path" "legacy path detected" \
-  ./.agents/skills/minecraft-world-generation/scripts/validate-worldgen-json.sh \
+  ./.agents/skills/minecraft-java-content-engineering/scripts/datapack/worldgen/validate-worldgen-json.sh \
   --root tests/fixtures/validators/worldgen/legacy
 
 fabric_scaffold_root="$(mktemp -d)"
