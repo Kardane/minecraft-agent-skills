@@ -1,15 +1,15 @@
 ---
 name: minecraft-fabric-server-dev
-description: "Minecraft Java Edition 1.21.8 Fabric 서버사이드 Java 코드를 설계, 구현, 디버깅하고 로컬 artifact를 빌드할 때 사용한다. 서버 권한/상태, networking, lifecycle/threading, persistence/config, commands/permissions, performance를 우선하며 Mixin/Polymer는 필요할 때만 사용한다."
+description: "Minecraft Java Edition 1.21.8 Fabric 서버사이드 Java 코드를 설계, 구현, 디버깅하고 로컬 artifact를 빌드할 때 사용한다. 서버 권한/상태, networking, lifecycle/threading, persistence/config, commands/permissions, performance를 우선하며 Mixin은 필요할 때만 사용한다."
 ---
 
 # Minecraft Fabric Server Dev
 
 ## Routing Boundaries
 
-- `Use when`: designing, implementing, debugging, or locally building Fabric server-side Java code, Fabric API integrations, Mixin, Polymer, mappings, or Minecraft internals.
+- `Use when`: designing, implementing, debugging, or locally building Fabric server-side Java code, Fabric API integrations, Mixin, mappings, or Minecraft internals.
 - `Primary capabilities`: `fabric-java-implementation`, `fabric-internals-mapping`, `fabric-local-build`
-- `Do not use when`: behavior validation is the primary task (`fabric-server-validation`), the task is CI/tag/publishing/release automation (`minecraft-ci-release`), the task is worldgen data/schema work without Java integration (`minecraft-java-content-engineering`), WorldEdit API/Region/Mask/Pattern/EditSession integration is the primary problem (`minecraft-worldedit-engineering`), the work is client-rendering-only, or the project uses a non-Fabric loader.
+- `Do not use when`: behavior validation is the primary task (`fabric-server-validation`), the task is CI/tag/publishing/release automation (`minecraft-ci-release`), the task is worldgen data/schema work without Java integration (`minecraft-java-content-engineering`), WorldEdit API/Region/Mask/Pattern/EditSession integration is the primary problem (`minecraft-worldedit-engineering`), Polymer projection/server-content integration is the primary problem (`minecraft-polymer-server-content`), the work is client-rendering-only, or the project uses a non-Fabric loader.
 
 이 스킬은 "돌아가기만 하는 모드"가 아니라, 운영 서버에서 장애 없이 굴러가는 서버사이드 Fabric 모드를 만드는 실무용 표준이다.
 
@@ -22,7 +22,7 @@ description: "Minecraft Java Edition 1.21.8 Fabric 서버사이드 Java 코드�
 - persistent state, serialization, config/reload boundary
 - Brigadier command registration과 permission gate
 - tick hot-path / allocation / I/O 성능 설계
-- 필요한 경우에만 Mixin 런타임 주입과 Polymer 서버 표현 계층
+- 필요한 경우에만 Mixin 런타임 주입
 - WSL/Linux 셸(`.sh`) 기준 자동화
 
 ## 빠른 시작
@@ -30,7 +30,7 @@ description: "Minecraft Java Edition 1.21.8 Fabric 서버사이드 Java 코드�
 1. 새 프로젝트 생성
 `./scripts/new-fabric-server-mod.sh -ProjectName <name> -PackageBase <pkg> -OutputDir <path>`
 
-   기본 scaffold는 Fabric API만 사용한다. 실제 요구사항이 있을 때만 `--with-mixin`, `--with-polymer`를 추가한다.
+   기본 scaffold는 Fabric API만 사용한다. 실제 요구사항이 있을 때만 `--with-mixin`을 추가한다. Polymer가 필요하면 `minecraft-polymer-server-content`로 위임한다.
 
 2. 생성 직후 정합성 검증
 `./scripts/verify-mod-env.sh -ProjectDir <path>/<name>`
@@ -54,7 +54,7 @@ description: "Minecraft Java Edition 1.21.8 Fabric 서버사이드 Java 코드�
 
 - Java Toolchain: `21`
 - Minecraft: `1.21.8`
-- Fabric API/Loader/Polymer: `1.21.8` 호환 안정 버전으로 고정
+- Fabric API/Loader: `1.21.8` 호환 안정 버전으로 고정
 - 버전 변경은 한 축씩만 수행하고 매번 서버 기동 검증
 
 ### 3) 아키텍처 잠금
@@ -67,7 +67,7 @@ description: "Minecraft Java Edition 1.21.8 Fabric 서버사이드 Java 코드�
 4. **명시적 persistence/config**: transient state, 저장 상태, 운영 config를 서로 다른 수명 주기로 관리한다.
 5. **bounded hot path**: tick마다 전역 스캔, blocking I/O, 무제한 allocation/queue를 만들지 않는다.
 6. **Mixin**: Fabric API/event/callback로 요구사항을 충족할 수 없을 때만 최소 범위로 추가한다.
-7. **Polymer**: 바닐라 클라이언트 표현 투영이 실제 요구사항일 때만 추가한다.
+7. **Polymer handoff**: 바닐라 클라이언트 projection이 핵심이면 `minecraft-polymer-server-content`에 위임한다.
 
 책임이 생기기 전에는 빈 service/bridge 계층이나 확장 포인트를 미리 만들지 않는다.
 
@@ -79,7 +79,7 @@ description: "Minecraft Java Edition 1.21.8 Fabric 서버사이드 Java 코드�
 4. 저장이 필요한 상태는 serializer와 schema/migration 정책을 먼저 정한 뒤 persistence에 연결한다.
 5. blocking I/O나 비싼 계산은 tick hot path에서 분리하고, Minecraft 객체 접근은 서버 스레드로 되돌린다.
 6. Minecraft 내부 메서드/호출 순서가 불확실할 때만 mcdev-mcp로 exact 1.21.8 class/method/caller/callee를 확인한다.
-7. Fabric API로 부족할 때만 최소 Mixin, 바닐라 클라이언트 projection이 필요할 때만 Polymer를 추가한다.
+7. Fabric API로 부족할 때만 최소 Mixin을 추가한다. Polymer projection 구현은 `minecraft-polymer-server-content`에 위임한다.
 8. `fabric-server-validation`로 가장 싼 충분한 행동 증거를 만든다.
 9. representative load에서 로그/프로파일을 확인한 뒤 다음 기능으로 이동한다.
 
@@ -113,13 +113,10 @@ description: "Minecraft Java Edition 1.21.8 Fabric 서버사이드 Java 코드�
   - `--fabric-api-version <ver>`
   - `--yarn-mappings <ver>`
   - `--with-mixin` — Mixin config를 opt-in으로 생성
-  - `--with-polymer` — Polymer 의존성을 opt-in으로 추가
-  - `--polymer-version <ver>` — `--with-polymer`와 함께 사용
 
 생성 결과:
 - 항상: `gradle.properties`, `build.gradle`, `settings.gradle`, `fabric.mod.json`, 최소 `MainMod`
 - `--with-mixin`: 빈 Mixin config를 추가하고 실제 target mixin은 요구사항이 생겼을 때 작성
-- `--with-polymer`: Polymer repository/dependency/version key만 추가하고 불필요한 bridge wrapper는 만들지 않음
 - Gradle wrapper는 생성하지 않는다. 공식 Fabric 템플릿의 1.21.8 wrapper를 사용하거나 로컬 Gradle로 생성한 뒤 커밋한다.
 
 ### `scripts/verify-mod-env.sh`
@@ -132,7 +129,6 @@ description: "Minecraft Java Edition 1.21.8 Fabric 서버사이드 Java 코드�
   - `minecraft_version=1.21.8`, Java 21, Fabric Loader/API 버전 키 존재
   - `fabric.mod.json` JSON 파싱 + `environment=server`
   - Mixin이 선언된 경우에만 config 존재/JSON 구조 검증
-  - Polymer가 선언된 경우에만 version key/dependency 정합성 검증
   - Gradle wrapper: 전체가 없으면 bootstrap 필요 경고, 일부만 존재하면 실패
   - 클라이언트 전용 import 사용 탐지(경고)
   - placeholder 미치환 값 탐지(경고)
@@ -149,6 +145,7 @@ description: "Minecraft Java Edition 1.21.8 Fabric 서버사이드 Java 코드�
 | 데이터팩/리소스팩 제작 | `minecraft-java-content-engineering` |
 | worldgen JSON/registry graph/schema 설계 | `minecraft-java-content-engineering` |
 | WorldEdit API 기반 대규모/조건부 live-world 편집 | `minecraft-worldedit-engineering` |
+| Polymer item/block/entity projection, generated resource pack, virtual entity | `minecraft-polymer-server-content` |
 | CI/tag/release/publishing 자동화 | `minecraft-ci-release` |
 
 일반적인 수정 루프:
@@ -175,7 +172,7 @@ repo inspect
 3. tick lag면 blocking I/O, 전역 스캔, allocation, queue growth, 반복 serialization부터 확인한다.
 4. 재시작 후 손실/오염이면 persistence ownership, dirty marking, schema migration, config reload 경계를 확인한다.
 5. 빌드/기동 실패면 버전 키, mappings, entrypoint, dependency, metadata를 확인한다.
-6. 그 다음에만 Mixin target/충돌 또는 Polymer projection 문제를 조사한다.
+6. 그 다음에만 Mixin target/충돌을 조사한다. Polymer projection 문제는 `minecraft-polymer-server-content`에 위임한다.
 
 ## Production engineering rules
 
@@ -216,11 +213,11 @@ repo inspect
 - packet fan-out과 serialization 빈도를 state change 기준으로 제한한다.
 - 최적화는 profile/representative load evidence 뒤에 한다. 단순히 async로 옮겼다는 이유로 빨라졌다고 간주하지 않는다.
 
-### Mixin and Polymer
+### Mixin and specialist boundaries
 
 - Mixin은 public/event API로 해결되지 않는 정확한 gap을 설명할 수 있을 때만 사용한다.
-- Polymer는 client projection 요구가 있을 때만 사용하고 authoritative state와 분리한다.
-- 두 기술 모두 core server rule의 기본 저장소나 permission boundary가 되어서는 안 된다.
+- Polymer projection은 `minecraft-polymer-server-content`에 위임한다.
+- Mixin은 core server rule의 기본 저장소나 permission boundary가 되어서는 안 된다.
 
 ### Simplicity gate
 
@@ -230,7 +227,7 @@ repo inspect
 
 ## 참조 문서 인덱스
 
-핵심 server engineering reference를 먼저 고르고, Mixin/Polymer 문서는 실제 필요가 있을 때만 연다.
+핵심 server engineering reference를 먼저 고르고, Mixin 문서는 실제 필요가 있을 때만 연다.
 
 - Networking/C2S trust/rate boundary: [references/server-networking-security.md](references/server-networking-security.md)
 - Lifecycle/thread affinity/async I/O: [references/server-lifecycle-threading.md](references/server-lifecycle-threading.md)
@@ -240,7 +237,7 @@ repo inspect
 - mcdev-mcp 질의 패턴: [references/mcdev-query-playbook.md](references/mcdev-query-playbook.md)
 - Fabric 설정/버전 전략: [references/fabric-setup-1.21.8.md](references/fabric-setup-1.21.8.md)
 - Mixin 패턴/충돌 해소: [references/mixin-patterns.md](references/mixin-patterns.md)
-- Polymer 서버 사용 패턴: [references/polymer-server-usage.md](references/polymer-server-usage.md)
+- Polymer server-content/projection: `minecraft-polymer-server-content`
 - 검증 체크리스트: [references/verification-release-checklist.md](references/verification-release-checklist.md)
 - 운영 장애 시그니처: [references/runtime-failure-signatures.md](references/runtime-failure-signatures.md)
 
@@ -251,7 +248,7 @@ repo inspect
 
 요약
 - 목표: ...
-- 범위: lifecycle | networking | state | config | command | permission | performance | mixin | polymer
+- 범위: lifecycle | networking | state | config | command | permission | performance | mixin
 
 구현 단계
 1. ...

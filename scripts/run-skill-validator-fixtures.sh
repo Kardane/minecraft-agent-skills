@@ -350,25 +350,60 @@ expect_pass "fabric minimal verifier" \
   ./.agents/skills/minecraft-fabric-server-dev/scripts/verify-mod-env.sh \
   --project-dir "$fabric_scaffold_root/minimal"
 
-expect_pass "fabric opt-in scaffold" \
+expect_pass "fabric mixin opt-in scaffold" \
   ./.agents/skills/minecraft-fabric-server-dev/scripts/new-fabric-server-mod.sh \
   --project-name optin \
   --package-base com.example.optin \
   --output-dir "$fabric_scaffold_root" \
   --loader-version 0.16.test \
   --fabric-api-version 0.test+1.21.8 \
-  --with-mixin \
-  --with-polymer \
-  --polymer-version 0.test+1.21.8
+  --with-mixin
 
-grep -Fq "polymer-core" "$fabric_scaffold_root/optin/build.gradle"
 grep -Fq "optin.mixins.json" "$fabric_scaffold_root/optin/src/main/resources/fabric.mod.json"
+if grep -Fq "polymer-core" "$fabric_scaffold_root/optin/build.gradle"; then
+  echo "$FAIL generic Fabric scaffold unexpectedly includes Polymer" >&2
+  exit 1
+fi
 
-expect_pass "fabric opt-in verifier" \
+expect_pass "fabric mixin opt-in verifier" \
   ./.agents/skills/minecraft-fabric-server-dev/scripts/verify-mod-env.sh \
   --project-dir "$fabric_scaffold_root/optin"
 
 rm -rf "$fabric_scaffold_root"
+trap - EXIT
+
+polymer_fixture_root="$(mktemp -d)"
+trap 'rm -rf "$polymer_fixture_root"' EXIT
+mkdir -p "$polymer_fixture_root/valid/src/main/resources" "$polymer_fixture_root/bad-version/src/main/resources"
+
+cat > "$polymer_fixture_root/valid/gradle.properties" <<'EOF'
+minecraft_version=1.21.8
+polymer_version=0.13.13+1.21.8
+EOF
+cat > "$polymer_fixture_root/valid/build.gradle" <<'EOF'
+repositories { maven { url = 'https://maven.nucleoid.xyz/' } }
+dependencies {
+  modImplementation include("eu.pb4:polymer-core:${project.polymer_version}")
+  modImplementation include("eu.pb4:polymer-resource-pack:${project.polymer_version}")
+  modImplementation include("eu.pb4:polymer-blocks:${project.polymer_version}")
+}
+java { toolchain { languageVersion = JavaLanguageVersion.of(21) } }
+EOF
+cat > "$polymer_fixture_root/valid/src/main/resources/fabric.mod.json" <<'EOF'
+{"schemaVersion":1,"id":"polymer_fixture","version":"1","environment":"server"}
+EOF
+cp -R "$polymer_fixture_root/valid/." "$polymer_fixture_root/bad-version/"
+sed -i 's/polymer_version=0.13.13+1.21.8/polymer_version=0.13.12+1.21.8/' "$polymer_fixture_root/bad-version/gradle.properties"
+
+expect_pass "polymer integration valid" \
+  ./.agents/skills/minecraft-polymer-server-content/scripts/verify-polymer-integration.sh \
+  --project-dir "$polymer_fixture_root/valid"
+
+expect_fail_contains "polymer integration rejects version drift" "polymer_version must be 0.13.13+1.21.8" \
+  ./.agents/skills/minecraft-polymer-server-content/scripts/verify-polymer-integration.sh \
+  --project-dir "$polymer_fixture_root/bad-version"
+
+rm -rf "$polymer_fixture_root"
 trap - EXIT
 
 echo "$PASS all validator fixture checks completed"

@@ -166,6 +166,59 @@
       ]
     },
     {
+      "id": "polymer-custom-item",
+      "prompt": "Polymer로 서버에는 실제 custom item을 유지하고 바닐라 클라이언트에는 다른 item/model로 보이게 구현해줘",
+      "capability": "polymer-server-content",
+      "expected_primary": "minecraft-polymer-server-content",
+      "allowed_supporting": [
+        "minecraft-fabric-server-dev"
+      ]
+    },
+    {
+      "id": "polymer-textured-block",
+      "prompt": "Polymer 0.13.13+1.21.8로 custom textured block을 vanilla client에 resource pack으로 보여줘",
+      "capability": "polymer-server-content",
+      "expected_primary": "minecraft-polymer-server-content",
+      "allowed_supporting": [
+        "minecraft-java-content-engineering"
+      ]
+    },
+    {
+      "id": "polymer-entity-projection",
+      "prompt": "custom entity를 서버에 유지하고 PolymerEntity로 vanilla zombie representation을 보내줘",
+      "capability": "polymer-server-content",
+      "expected_primary": "minecraft-polymer-server-content",
+      "allowed_supporting": [
+        "minecraft-fabric-server-dev"
+      ]
+    },
+    {
+      "id": "polymer-virtual-entity",
+      "prompt": "실제 Minecraft Entity 등록 없이 Polymer virtual entity로 display 요소를 보여줘",
+      "capability": "polymer-server-content",
+      "expected_primary": "minecraft-polymer-server-content",
+      "allowed_supporting": []
+    },
+    {
+      "id": "polymer-resource-pack",
+      "prompt": "모드 assets를 Polymer generated resource pack에 등록하고 vanilla player에 적용해줘",
+      "capability": "polymer-server-content",
+      "expected_primary": "minecraft-polymer-server-content",
+      "allowed_supporting": [
+        "minecraft-java-content-engineering",
+        "minecraft-server-admin"
+      ]
+    },
+    {
+      "id": "polymer-vanilla-validation",
+      "prompt": "Polymer custom item이 무개조 바닐라 1.21.8 클라이언트에서 실제로 보이고 동작하는지 검증해줘",
+      "capability": "fabric-behavior-validation",
+      "expected_primary": "fabric-server-validation",
+      "allowed_supporting": [
+        "minecraft-polymer-server-content"
+      ]
+    },
+    {
       "id": "worldedit-api-region-replace",
       "prompt": "Fabric 1.21.8 모드에서 WorldEdit 명령어 없이 API로 100x100 영역의 stone만 deepslate로 교체해줘",
       "capability": "worldedit-api-engineering",
