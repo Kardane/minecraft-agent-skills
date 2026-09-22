@@ -16,6 +16,7 @@ description: "Set up, operate, tune, and troubleshoot Minecraft Java 1.21.8 serv
 ## References
 
 - Read `references/deployment-checklists.md` when the task is an incident, rollout window, proxy change, or recovery drill and you need a compact checklist before acting.
+- Read `references/multiplayer-ops-troubleshooting.md` for fast symptom classification, mitigation, and rollback-oriented incident triage.
 
 ---
 
