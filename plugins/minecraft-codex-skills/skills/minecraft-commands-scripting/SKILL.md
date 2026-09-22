@@ -1,6 +1,6 @@
 ---
 name: minecraft-commands-scripting
-description: "Write and debug Minecraft Java 1.21.8 command syntax and command-only logic: selectors, execute chains, scoreboards, command NBT/components, and mcfunction snippets. Use minecraft-java-content-engineering for complete datapacks and minecraft-server-admin for RCON transport, backups, or live operations."
+description: "Write and debug Minecraft Java 1.21.8 command syntax and command-only logic: selectors, execute chains, scoreboards, NBT/components, and mcfunction snippets. Use content engineering for complete datapacks and server admin for RCON transport, backups, or live operations."
 ---
 
 # Minecraft Commands & Scripting Skill
